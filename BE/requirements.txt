@@ -1,0 +1,5 @@
+Flask
+Flask-SocketIO
+Flask-MySQLdb
+Flask-CORS
+Flask-SQLAlchemy
