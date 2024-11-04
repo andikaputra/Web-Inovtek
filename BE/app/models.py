@@ -1,4 +1,6 @@
 from . import db  # Import db from the main app package instead of redefining it
+from datetime import datetime
+
 
 class QuizKode(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -6,6 +8,9 @@ class QuizKode(db.Model):
     created_at = db.Column(db.TIMESTAMP, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.TIMESTAMP, nullable=True, onupdate=datetime.utcnow)
     deleted_at = db.Column(db.TIMESTAMP, nullable=True) 
+    peserta = db.relationship('Peserta', backref='peserta', lazy=True)
+    peserta_nilai = db.relationship('PesertaNilai', backref='peserta_nilai', lazy=True)
+    soal = db.relationship('Soal', backref='soal', lazy=True)
 
 class Peserta(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -14,6 +19,7 @@ class Peserta(db.Model):
     created_at = db.Column(db.TIMESTAMP, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.TIMESTAMP, nullable=True, onupdate=datetime.utcnow)
     deleted_at = db.Column(db.TIMESTAMP, nullable=True) 
+    peserta_nilai = db.relationship('PesertaNilai', backref='peserta_nilai', lazy=True)
 
 class PesertaNilai(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -30,6 +36,7 @@ class SoalJenis(db.Model):
     created_at = db.Column(db.TIMESTAMP, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.TIMESTAMP, nullable=True, onupdate=datetime.utcnow)
     deleted_at = db.Column(db.TIMESTAMP, nullable=True) 
+    soal = db.relationship('Soal', backref='soal', lazy=True)
 
 class Waktu(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -38,6 +45,7 @@ class Waktu(db.Model):
     created_at = db.Column(db.TIMESTAMP, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.TIMESTAMP, nullable=True, onupdate=datetime.utcnow)
     deleted_at = db.Column(db.TIMESTAMP, nullable=True) 
+    soal = db.relationship('Soal', backref='soal', lazy=True)
 
 class Soal(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -51,6 +59,7 @@ class Soal(db.Model):
     created_at = db.Column(db.TIMESTAMP, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.TIMESTAMP, nullable=True, onupdate=datetime.utcnow)
     deleted_at = db.Column(db.TIMESTAMP, nullable=True) 
+    soal_jawaban = db.relationship('SoalJawaban', backref='soal_jawaban', lazy=True)
 
 class SoalJawaban(db.Model):
     id = db.Column(db.Integer, primary_key=True)
