@@ -1,31 +1,63 @@
 from . import db  # Import db from the main app package instead of redefining it
 
-class Quiz(db.Model):
+class QuizKode(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    kode = db.Column(db.String(255), nullable=False)
-    questions = db.relationship('Question', backref='quiz', lazy=True)
-    player = db.relationship('Player', backref='player', lazy=True)
-
-class Question(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.id'), nullable=False)
-    text = db.Column(db.String(255), nullable=False)
-    answers = db.relationship('Answer', backref='question', lazy=True)
-
-class Answer(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    question_id = db.Column(db.Integer, db.ForeignKey('question.id'), nullable=False)
-    text = db.Column(db.String(255), nullable=False)
-    is_correct = db.Column(db.Boolean, default=False)
-
-class Player(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.id'), nullable=False)
     nama = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.TIMESTAMP, nullable=False, default=datetime.utcnow)
+    updated_at = db.Column(db.TIMESTAMP, nullable=True, onupdate=datetime.utcnow)
+    deleted_at = db.Column(db.TIMESTAMP, nullable=True) 
 
-class PlayerAnswer(db.Model):
+class Peserta(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    quiz_id = db.Column(db.Integer, nullable=False)
-    player_id = db.Column(db.Integer, nullable=False)
-    question_id = db.Column(db.Integer, nullable=False)
-    answer_id = db.Column(db.Integer, nullable=False)
+    id_quiz_kode = db.Column(db.Integer, db.ForeignKey('quiz_kode.id'), nullable=False)
+    nama = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.TIMESTAMP, nullable=False, default=datetime.utcnow)
+    updated_at = db.Column(db.TIMESTAMP, nullable=True, onupdate=datetime.utcnow)
+    deleted_at = db.Column(db.TIMESTAMP, nullable=True) 
+
+class PesertaNilai(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    id_quiz_kode = db.Column(db.Integer, db.ForeignKey('quiz_kode.id'), nullable=False)
+    id_peserta = db.Column(db.Integer, db.ForeignKey('peserta.id'), nullable=False)
+    nilai = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.TIMESTAMP, nullable=False, default=datetime.utcnow)
+    updated_at = db.Column(db.TIMESTAMP, nullable=True, onupdate=datetime.utcnow)
+    deleted_at = db.Column(db.TIMESTAMP, nullable=True) 
+
+class SoalJenis(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nama = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.TIMESTAMP, nullable=False, default=datetime.utcnow)
+    updated_at = db.Column(db.TIMESTAMP, nullable=True, onupdate=datetime.utcnow)
+    deleted_at = db.Column(db.TIMESTAMP, nullable=True) 
+
+class Waktu(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nama = db.Column(db.String(255), nullable=False)
+    detik = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.TIMESTAMP, nullable=False, default=datetime.utcnow)
+    updated_at = db.Column(db.TIMESTAMP, nullable=True, onupdate=datetime.utcnow)
+    deleted_at = db.Column(db.TIMESTAMP, nullable=True) 
+
+class Soal(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    id_quiz_kode = db.Column(db.Integer, db.ForeignKey('quiz_kode.id'), nullable=False)
+    id_soal_jenis = db.Column(db.Integer, db.ForeignKey('soal_jenis.id'), nullable=False)
+    id_waktu = db.Column(db.Integer, db.ForeignKey('waktu.id'), nullable=False)
+    pertanyaan = db.Column(db.String(255), nullable=False)
+    file = db.Column(db.Text, nullable=False)
+    jenis_file = db.Column(db.String(255), nullable=False)
+    layout = db.Column(db.Integer, nullable=False) 
+    created_at = db.Column(db.TIMESTAMP, nullable=False, default=datetime.utcnow)
+    updated_at = db.Column(db.TIMESTAMP, nullable=True, onupdate=datetime.utcnow)
+    deleted_at = db.Column(db.TIMESTAMP, nullable=True) 
+
+class SoalJawaban(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    id_soal = db.Column(db.Integer, db.ForeignKey('soal.id'), nullable=False)
+    text_jawaban = db.Column(db.Text, nullable=False)
+    correct = db.Column(db.Boolean, nullable=False)
+    bobot = db.Column(db.Integer, nullable=False) 
+    created_at = db.Column(db.TIMESTAMP, nullable=False, default=datetime.utcnow)
+    updated_at = db.Column(db.TIMESTAMP, nullable=True, onupdate=datetime.utcnow)
+    deleted_at = db.Column(db.TIMESTAMP, nullable=True) 
