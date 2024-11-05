@@ -197,3 +197,44 @@ def delete_soal(id):
     db.session.commit()
     
     return jsonify({'message': 'Soal deleted successfully'}), 200
+
+@quiz_bp.route('/soal/<int:id_quiz_kode>', methods=['GET'])
+def get_soal_by_quiz_kode(id_quiz_kode):
+    # Mendapatkan semua soal berdasarkan id_quiz_kode
+    soals = Soal.query.filter_by(id_quiz_kode=id_quiz_kode).all()
+    
+    # Jika tidak ada soal ditemukan
+    if not soals:
+        return jsonify({'error': 'No questions found for the specified quiz code'}), 404
+    
+    # Membuat respons dengan struktur JSON yang mencakup soal dan jawabannya
+    soal_data = []
+    for soal in soals:
+        jawaban_data = []
+        for jawaban in soal.soal_jawaban:
+            jawaban_data.append({
+                'id': jawaban.id,
+                'text_jawaban': jawaban.text_jawaban,
+                'correct': jawaban.correct,
+                'bobot': jawaban.bobot,
+                'created_at': jawaban.created_at,
+                'updated_at': jawaban.updated_at,
+                'deleted_at': jawaban.deleted_at
+            })
+        
+        soal_data.append({
+            'id': soal.id,
+            'id_quiz_kode': soal.id_quiz_kode,
+            'id_soal_jenis': soal.id_soal_jenis,
+            'id_waktu': soal.id_waktu,
+            'pertanyaan': soal.pertanyaan,
+            'file': soal.file,
+            'jenis_file': soal.jenis_file,
+            'layout': soal.layout,
+            'created_at': soal.created_at,
+            'updated_at': soal.updated_at,
+            'deleted_at': soal.deleted_at,
+            'jawaban': jawaban_data  # Menyertakan data jawaban terkait
+        })
+    
+    return jsonify(soal_data), 200
