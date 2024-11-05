@@ -248,3 +248,16 @@ def download_file(filename):
 
     # Kirim file ke klien
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
+
+# Example for inline view without download
+@quiz_bp.route('/view/<filename>', methods=['GET'])
+def view_file(filename):
+    UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'upload')
+    current_app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+    file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+    if not os.path.exists(file_path):
+        abort(404, description="File not found")
+
+    return send_file(file_path)
+ 
