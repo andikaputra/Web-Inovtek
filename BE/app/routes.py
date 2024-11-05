@@ -58,3 +58,13 @@ def update_quiz_kode(id):
     quiz.updated_at = datetime.utcnow()
     db.session.commit()
     return jsonify({'message': 'QuizKode updated successfully'}), 200
+
+# DELETE
+@quiz_bp.route('/quiz_kode/<int:id>', methods=['DELETE'])
+def delete_quiz_kode(id):
+    quiz = QuizKode.query.filter_by(id=id, deleted_at=None).first()
+    if not quiz:
+        return jsonify({'message': 'QuizKode not found'}), 404
+    quiz.deleted_at = datetime.utcnow()
+    db.session.commit()
+    return jsonify({'message': 'QuizKode deleted successfully'}), 200
