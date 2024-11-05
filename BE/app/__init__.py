@@ -13,6 +13,9 @@ def create_app():
     db.init_app(app)
     socketio.init_app(app)
 
+    # Konfigurasi UPLOAD_FOLDER di aplikasi utama
+    app.config['UPLOAD_FOLDER'] = "upload"
+
     # Register blueprint
     from .routes import quiz_bp
     app.register_blueprint(quiz_bp)
