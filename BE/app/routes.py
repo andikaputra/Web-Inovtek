@@ -261,3 +261,29 @@ def view_file(filename):
 
     return send_file(file_path)
  
+ # ===============================PESERTA==============================================
+@app.route('/peserta', methods=['GET'])
+def get_single_peserta_by_kode():
+    kode = request.args.get('kode')
+    
+    if not kode:
+        return jsonify({'error': 'Kode tidak disediakan'}), 400
+
+    # Query untuk mencari satu peserta berdasarkan kode_unik dan deleted_at is null
+    peserta = Peserta.query.filter_by(kode_unik=kode, deleted_at=None).first()
+    
+    if not peserta:
+        return jsonify({'message': 'Peserta tidak ditemukan'}), 404
+
+    # Serialisasi data peserta
+    peserta_data = {
+        'id': peserta.id,
+        'id_quiz_kode': peserta.id_quiz_kode,
+        'kode_unik': peserta.kode_unik,
+        'created_at': peserta.created_at,
+        'updated_at': peserta.updated_at,
+        'deleted_at': peserta.deleted_at,
+        # tambahkan field lain sesuai model Anda
+    }
+
+    return jsonify({'peserta': peserta_data}), 200
