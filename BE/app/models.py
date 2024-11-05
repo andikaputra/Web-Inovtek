@@ -1,16 +1,15 @@
 from . import db  # Import db from the main app package instead of redefining it
 from datetime import datetime
 
-
 class QuizKode(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    nama = db.Column(db.String(255), nullable=False)
+    kode = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.TIMESTAMP, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.TIMESTAMP, nullable=True, onupdate=datetime.utcnow)
     deleted_at = db.Column(db.TIMESTAMP, nullable=True) 
-    peserta = db.relationship('Peserta', backref='peserta', lazy=True)
-    peserta_nilai = db.relationship('PesertaNilai', backref='peserta_nilai', lazy=True)
-    soal = db.relationship('Soal', backref='soal', lazy=True)
+    peserta = db.relationship('Peserta', backref='quiz_kode', lazy=True)
+    peserta_nilai = db.relationship('PesertaNilai', backref='quiz_kode', lazy=True)
+    soal = db.relationship('Soal', backref='quiz_kode', lazy=True)
 
 class Peserta(db.Model):
     id = db.Column(db.Integer, primary_key=True)
