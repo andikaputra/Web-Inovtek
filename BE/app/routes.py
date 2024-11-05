@@ -238,3 +238,13 @@ def get_soal_by_quiz_kode(id_quiz_kode):
         })
     
     return jsonify(soal_data), 200
+
+@quiz_bp.route('/download/<filename>', methods=['GET'])
+def download_file(filename):
+    # Cek apakah file ada di folder yang ditentukan
+    file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+    if not os.path.exists(file_path):
+        abort(404, description="File not found")
+
+    # Kirim file ke klien
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
