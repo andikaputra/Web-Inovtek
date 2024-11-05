@@ -27,3 +27,13 @@ def create_quiz_kode():
     db.session.add(new_quiz_kode)
     db.session.commit()
     return jsonify({'message': 'QuizKode created successfully', 'data': data}), 201
+
+# READ (GET ALL)
+@quiz_bp.route('/quiz_kode', methods=['GET'])
+def get_quiz_kode():
+    quiz_kodes = QuizKode.query.filter_by(deleted_at=None).all()
+    output = []
+    for quiz in quiz_kodes:
+        quiz_data = {'id': quiz.id, 'kode': quiz.kode, 'created_at': quiz.created_at, 'updated_at': quiz.updated_at}
+        output.append(quiz_data)
+    return jsonify({'data': output}), 200
