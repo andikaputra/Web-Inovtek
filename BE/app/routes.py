@@ -68,3 +68,13 @@ def delete_quiz_kode(id):
     quiz.deleted_at = datetime.utcnow()
     db.session.commit()
     return jsonify({'message': 'QuizKode deleted successfully'}), 200
+
+# =====================================SOAL JENIS==========================================================
+
+@quiz_bp.route('/soal_jenis', methods=['GET'])
+def get_soal_jenis():
+    # Mendapatkan semua data dari tabel SoalJenis
+    soalJenis = SoalJenis.query.all()
+    # Memformat data dalam bentuk JSON
+    data = [{"id": sj.id, "nama": sj.nama} for sj in soalJenis]
+    return jsonify({"data": data}), 200
