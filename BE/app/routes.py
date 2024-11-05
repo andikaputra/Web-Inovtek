@@ -178,3 +178,22 @@ def upload_file():
         index += 1
 
     return jsonify({'success': 'File uploaded successfully'}), 200
+
+
+@quiz_bp.route('/soal/<int:id>', methods=['DELETE'])
+def delete_soal(id):
+    # Mencari soal berdasarkan ID
+    soal = Soal.query.get(id)
+    
+    # Jika soal tidak ditemukan
+    if not soal:
+        return jsonify({'error': 'Soal not found'}), 404
+    
+    # Hapus semua jawaban yang terkait dengan soal ini
+    SoalJawaban.query.filter_by(id_soal=id).delete()
+
+    # Menghapus soal dari database
+    db.session.delete(soal)
+    db.session.commit()
+    
+    return jsonify({'message': 'Soal deleted successfully'}), 200
