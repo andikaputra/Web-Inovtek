@@ -55,7 +55,7 @@ class Waktu(db.Model):
     created_at = db.Column(db.TIMESTAMP, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.TIMESTAMP, nullable=True, onupdate=datetime.utcnow)
     deleted_at = db.Column(db.TIMESTAMP, nullable=True) 
-    soal = db.relationship('Soal', backref='soal', lazy=True)
+    soal = db.relationship('Soal', backref='waktu', lazy=True)
 
 class Soal(db.Model):
     id = db.Column(db.Integer, primary_key=True)
