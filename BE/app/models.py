@@ -29,7 +29,13 @@ class PesertaNilai(db.Model):
     created_at = db.Column(db.TIMESTAMP, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.TIMESTAMP, nullable=True, onupdate=datetime.utcnow)
     deleted_at = db.Column(db.TIMESTAMP, nullable=True) 
+
+class PesertaJawaban(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    id_soal = db.Column(db.Integer, db.ForeignKey('soal.id'), nullable=False)
+    id_peserta = db.Column(db.Integer, db.ForeignKey('peserta.id'), nullable=False)
     nilai = db.Column(db.Integer, nullable=False)
+    bobot = db.Column(db.Integer, nullable=False) 
     created_at = db.Column(db.TIMESTAMP, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.TIMESTAMP, nullable=True, onupdate=datetime.utcnow)
     deleted_at = db.Column(db.TIMESTAMP, nullable=True) 
