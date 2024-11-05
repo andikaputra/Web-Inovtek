@@ -78,3 +78,12 @@ def get_soal_jenis():
     # Memformat data dalam bentuk JSON
     data = [{"id": sj.id, "nama": sj.nama} for sj in soalJenis]
     return jsonify({"data": data}), 200
+
+# =====================================WAKTU===========================================================
+@quiz_bp.route('/waktu', methods=['GET'])
+def get_waktu():
+    # Mendapatkan semua data dari tabel SoalJenis
+    waktu = Waktu.query.all()
+    # Memformat data dalam bentuk JSON
+    data = [{"id": wk.id, "nama": wk.nama, "detik": wk.detik} for wk in waktu]
+    return jsonify({"data": data}), 200
