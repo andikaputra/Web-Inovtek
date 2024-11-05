@@ -63,13 +63,13 @@ class Soal(db.Model):
     id_soal_jenis = db.Column(db.Integer, db.ForeignKey('soal_jenis.id'), nullable=False)
     id_waktu = db.Column(db.Integer, db.ForeignKey('waktu.id'), nullable=False)
     pertanyaan = db.Column(db.String(255), nullable=False)
-    file = db.Column(db.Text, nullable=False)
-    jenis_file = db.Column(db.String(255), nullable=False)
+    file = db.Column(db.Text, nullable=True)
+    jenis_file = db.Column(db.String(255), nullable=True)
     layout = db.Column(db.Integer, nullable=False) 
     created_at = db.Column(db.TIMESTAMP, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.TIMESTAMP, nullable=True, onupdate=datetime.utcnow)
     deleted_at = db.Column(db.TIMESTAMP, nullable=True) 
-    soal_jawaban = db.relationship('SoalJawaban', backref='soal_jawaban', lazy=True)
+    soal_jawaban = db.relationship('SoalJawaban', backref='soal', lazy=True)
 
 class SoalJawaban(db.Model):
     id = db.Column(db.Integer, primary_key=True)
