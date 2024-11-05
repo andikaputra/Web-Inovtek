@@ -46,3 +46,15 @@ def get_quiz_kode_by_id(id):
         return jsonify({'message': 'QuizKode not found'}), 404
     quiz_data = {'id': quiz.id, 'kode': quiz.kode, 'created_at': quiz.created_at, 'updated_at': quiz.updated_at}
     return jsonify({'data': quiz_data}), 200
+
+# UPDATE
+@quiz_bp.route('/quiz_kode/<int:id>', methods=['PUT'])
+def update_quiz_kode(id):
+    data = request.get_json()
+    quiz = QuizKode.query.filter_by(id=id, deleted_at=None).first()
+    if not quiz:
+        return jsonify({'message': 'QuizKode not found'}), 404
+    quiz.kode = data.get('kode', quiz.kode)
+    quiz.updated_at = datetime.utcnow()
+    db.session.commit()
+    return jsonify({'message': 'QuizKode updated successfully'}), 200
