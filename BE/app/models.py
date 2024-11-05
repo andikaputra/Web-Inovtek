@@ -14,11 +14,11 @@ class QuizKode(db.Model):
 class Peserta(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_quiz_kode = db.Column(db.Integer, db.ForeignKey('quiz_kode.id'), nullable=False)
-    nama = db.Column(db.String(255), nullable=False)
+    kode_unik = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.TIMESTAMP, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.TIMESTAMP, nullable=True, onupdate=datetime.utcnow)
     deleted_at = db.Column(db.TIMESTAMP, nullable=True) 
-    peserta_nilai = db.relationship('PesertaNilai', backref='peserta_nilai', lazy=True)
+    nilai = db.relationship('PesertaNilai', backref='peserta', lazy=True)
 
 class PesertaNilai(db.Model):
     id = db.Column(db.Integer, primary_key=True)
