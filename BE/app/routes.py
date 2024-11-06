@@ -341,15 +341,39 @@ def get_peserta():
     return jsonify({'data': output}), 200
 
 
-    # Serialisasi data peserta
+@quiz_bp.route('/peserta', methods=['POST'])
+def create_peserta():
+    data = request.get_json()
+
+    # Cek jika peserta dengan `id_quiz_kode` dan `kode_unik` sudah ada, tetapi dihapus
+    pes = Peserta.query.filter_by(
+        id_quiz_kode=data['id_quiz_kode'],
+        kode_unik=data['kode_unik'], 
+        deleted_at=None
+    ).first()
+    if pes:
+        pes.deleted_at = datetime.utcnow()
+        db.session.commit()
+
+    # Buat peserta baru
+    new_peserta = Peserta(
+        id_quiz_kode=data['id_quiz_kode'],
+        kode_unik=data['kode_unik'],
+        created_at=datetime.utcnow()
+    )
+    db.session.add(new_peserta)
+    db.session.commit()
+
+    # Ambil data lengkap peserta yang baru saja dibuat untuk ditampilkan
     peserta_data = {
-        'id': peserta.id,
-        'id_quiz_kode': peserta.id_quiz_kode,
-        'kode_unik': peserta.kode_unik,
-        'created_at': peserta.created_at,
-        'updated_at': peserta.updated_at,
-        'deleted_at': peserta.deleted_at,
-        # tambahkan field lain sesuai model Anda
+        'id': new_peserta.id,
+        'id_quiz_kode': new_peserta.id_quiz_kode,
+        'kode_unik': new_peserta.kode_unik,
+        'created_at': new_peserta.created_at,
+        'deleted_at': new_peserta.deleted_at
+    }
+
+    return jsonify({'message': 'Peserta created successfully', 'data': peserta_data}), 200
     }
 
     return jsonify({'peserta': peserta_data}), 200
