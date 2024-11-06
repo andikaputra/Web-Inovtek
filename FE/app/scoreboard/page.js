@@ -1,6 +1,22 @@
-import React from "react"; 
+"use client";
+
+import React, { useState, useEffect } from "react";
 
 function Scoreboard() {
+  const mulaiUjian = async () => {
+    window.location.href = "/quizzscreen";
+  };
+
+  useEffect(() => {
+    // Mengatur timeout untuk redirect setelah 5 detik
+    const timer = setTimeout(() => {
+      mulaiUjian();
+    }, 5000);
+
+    // Membersihkan timer jika komponen di-unmount sebelum waktu habis
+    return () => clearTimeout(timer);
+  }, []);
+
   const scores = [
     { name: "Modaser", score: 6802, top: true },
     { name: "Mozamel J 🔥", score: 6646 },
@@ -11,11 +27,19 @@ function Scoreboard() {
 
   return (
     <div
-      className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center"
+      className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center relative"
       style={{
         backgroundImage: `url("/src/img/bg.jpg")`,
       }}
     >
+      {/* Tombol Next di pojok kanan atas */}
+      <button
+        onClick={mulaiUjian}
+        className="absolute top-4 right-4 bg-purple-700 hover:bg-purple-800 text-white font-semibold py-2 px-4 rounded-md shadow-md"
+      >
+        Next
+      </button>
+
       <div className="bg-gray-800 text-white py-2 px-4 rounded-md text-2xl font-bold mb-6">
         Scoreboard
       </div>
