@@ -20,22 +20,23 @@ class Peserta(db.Model):
     deleted_at = db.Column(db.TIMESTAMP, nullable=True) 
     nilai = db.relationship('PesertaNilai', backref='peserta', lazy=True)
 
-class PesertaNilai(db.Model):
+class PesertaJawaban(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_quiz_kode = db.Column(db.Integer, db.ForeignKey('quiz_kode.id'), nullable=False)
+    id_soal = db.Column(db.Integer, db.ForeignKey('soal.id'), nullable=False)
     id_peserta = db.Column(db.Integer, db.ForeignKey('peserta.id'), nullable=False)
     jawaban = db.Column(db.Text, nullable=False)
     iscorrect = db.Column(db.Boolean, nullable=False)
+    bobot = db.Column(db.Integer, nullable=False) 
     created_at = db.Column(db.TIMESTAMP, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.TIMESTAMP, nullable=True, onupdate=datetime.utcnow)
     deleted_at = db.Column(db.TIMESTAMP, nullable=True) 
 
-class PesertaJawaban(db.Model):
+class PesertaNilai(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    id_soal = db.Column(db.Integer, db.ForeignKey('soal.id'), nullable=False)
+    id_quiz_kode = db.Column(db.Integer, db.ForeignKey('quiz_kode.id'), nullable=False)
     id_peserta = db.Column(db.Integer, db.ForeignKey('peserta.id'), nullable=False)
     nilai = db.Column(db.Integer, nullable=False)
-    bobot = db.Column(db.Integer, nullable=False) 
     created_at = db.Column(db.TIMESTAMP, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.TIMESTAMP, nullable=True, onupdate=datetime.utcnow)
     deleted_at = db.Column(db.TIMESTAMP, nullable=True) 
