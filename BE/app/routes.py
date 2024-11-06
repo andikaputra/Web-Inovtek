@@ -374,6 +374,30 @@ def create_peserta():
     }
 
     return jsonify({'message': 'Peserta created successfully', 'data': peserta_data}), 200
+
+    # ===============================PESERTA NILAI=============================================PESERTA
+@quiz_bp.route('/peserta_nilai/<int:id_peserta>/<int:id_quiz_kode>', methods=['GET'])
+def get_peserta_nilai(id_peserta, id_quiz_kode):
+    # Query untuk mengambil data peserta_nilai berdasarkan id_peserta, id_quiz_kode, dan deleted_at NULL
+    data = PesertaNilai.query.filter_by(
+        id_peserta=id_peserta,
+        id_quiz_kode=id_quiz_kode,
+        deleted_at=None  # Hanya mengambil data yang belum dihapus
+    ).first()
+
+    # Jika tidak ditemukan, kembalikan pesan error
+    if not data:
+        return jsonify({'message': 'Data not found'}), 404
+
+    # Mengonversi data ke dalam format yang bisa dikembalikan sebagai JSON
+    nilai_data = {
+        'id': data.id,
+        'id_quiz_kode': data.id_quiz_kode,
+        'id_peserta': data.id_peserta,
+        'nilai': data.nilai,  
+        'created_at': data.created_at,
+        'updated_at': data.updated_at,
+        'deleted_at': data.deleted_at
     }
 
-    return jsonify({'peserta': peserta_data}), 200
+    return jsonify({'message': 'Data retrieved successfully', 'data': nilai_data}), 200
