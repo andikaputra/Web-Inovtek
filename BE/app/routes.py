@@ -1,7 +1,8 @@
 from flask import Blueprint, request,send_from_directory, abort,send_file, jsonify, current_app
-from .models import db, SoalJenis, Waktu, QuizKode, Soal, SoalJawaban
+from .models import db, SoalJenis, Waktu, QuizKode, Soal, SoalJawaban, Peserta, PesertaNilai
 from flask_cors import CORS
 from sqlalchemy.exc import IntegrityError  # Import IntegrityError
+from sqlalchemy.orm import joinedload
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import os
@@ -42,6 +43,20 @@ def get_quiz_kode():
 @quiz_bp.route('/quiz_kode/<int:id>', methods=['GET'])
 def get_quiz_kode_by_id(id):
     quiz = QuizKode.query.filter_by(id=id, deleted_at=None).first()
+    if not quiz:
+        return jsonify({'message': 'QuizKode not found'}), 404
+    quiz_data = {'id': quiz.id, 'kode': quiz.kode, 'created_at': quiz.created_at, 'updated_at': quiz.updated_at}
+    return jsonify({'data': quiz_data}), 200
+
+# READ (GET BY Kode)
+@quiz_bp.route('/quiz/kode', methods=['GET'])
+def get_quiz_kode_by_kode():
+    kode = request.args.get('kode')
+    
+    if not kode:
+        return jsonify({'error': 'Kode tidak disediakan'}), 400
+
+    quiz = QuizKode.query.filter_by(kode=kode, deleted_at=None).first()
     if not quiz:
         return jsonify({'message': 'QuizKode not found'}), 404
     quiz_data = {'id': quiz.id, 'kode': quiz.kode, 'created_at': quiz.created_at, 'updated_at': quiz.updated_at}
