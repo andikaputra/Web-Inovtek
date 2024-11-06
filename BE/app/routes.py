@@ -253,6 +253,52 @@ def get_soal_by_quiz_kode(id_quiz_kode):
         })
     
     return jsonify(soal_data), 200
+ 
+
+@quiz_bp.route('/soal/ujian/<int:id_quiz_kode>/<int:offset>', methods=['GET'])
+def get_soal_ujian_by_quiz_kode(id_quiz_kode, offset=0):
+    # Query untuk mengambil soal dan waktu terkait
+    soal = Soal.query.filter_by(
+        id_quiz_kode=id_quiz_kode,
+        deleted_at=None  # Memastikan hanya data yang belum dihapus
+    ).options(
+        joinedload(Soal.soal_jawaban),  # Memuat soal_jawaban
+        joinedload(Soal.waktu)  # Memuat waktu yang berelasi dengan soal
+    ).limit(1).offset(offset).first()
+
+    # Jika data soal ditemukan, kembalikan dalam format JSON
+    if soal:
+        return jsonify({
+            "id": soal.id,
+            "id_quiz_kode": soal.id_quiz_kode,
+            "id_soal_jenis": soal.id_soal_jenis,
+            "id_waktu": soal.id_waktu,
+            "waktu": {
+                "id": soal.waktu.id,
+                "nama": soal.waktu.nama,
+                "detik": soal.waktu.detik
+            } if soal.waktu else None,
+            "pertanyaan": soal.pertanyaan,
+            "file": soal.file,
+            "jenis_file": soal.jenis_file,
+            "layout": soal.layout,
+            "created_at": soal.created_at,
+            "updated_at": soal.updated_at,
+            "deleted_at": soal.deleted_at,
+            "soal_jawaban": [
+                {
+                    "id": jawaban.id,
+                    "text_jawaban": jawaban.text_jawaban,
+                    "correct": jawaban.correct,
+                    "bobot": jawaban.bobot
+                }
+                for jawaban in soal.soal_jawaban
+            ]
+        })
+    else:
+        return jsonify({"error": "Soal not found or deleted"}), 404
+
+
 
 @quiz_bp.route('/download/<filename>', methods=['GET'])
 def download_file(filename):
