@@ -1,8 +1,10 @@
 from flask import Blueprint, request,send_from_directory, abort,send_file, jsonify, current_app
-from .models import db, SoalJenis, Waktu, QuizKode, Soal, SoalJawaban, Peserta, PesertaNilai
+from .models import db, SoalJenis, Waktu, QuizKode, Soal, SoalJawaban, Peserta, PesertaNilai, PesertaJawaban
 from flask_cors import CORS
 from sqlalchemy.exc import IntegrityError  # Import IntegrityError
 from sqlalchemy.orm import joinedload
+from sqlalchemy import func, desc, literal
+from sqlalchemy import desc
 from datetime import datetime
 from werkzeug.utils import secure_filename
 import os
@@ -481,3 +483,23 @@ def submit_answers():
         }
     }), 200
 
+
+
+@quiz_bp.route('/answer_count/<int:id_quiz_kode>/<int:id_soal>', methods=['GET'])
+def answer_count(id_quiz_kode, id_soal):
+    # Dapatkan semua jawaban peserta untuk soal tertentu dalam quiz
+    peserta_jawaban = PesertaJawaban.query.filter_by(
+        id_quiz_kode=id_quiz_kode,
+        id_soal=id_soal,
+        deleted_at=None
+    ).all()
+
+    # Hitung jumlah pilihan untuk setiap opsi jawaban
+    answer_count = {}
+    for jawaban in peserta_jawaban:
+        if jawaban.jawaban not in answer_count:
+            answer_count[jawaban.jawaban] = 0
+        answer_count[jawaban.jawaban] += 1
+
+    # Kembalikan hasil dalam format JSON
+    return jsonify(answer_count), 200
