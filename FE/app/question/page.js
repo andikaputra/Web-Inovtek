@@ -2,8 +2,20 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { firestore } from '../firebase';
+import {
+  collection,
+  addDoc,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  setDoc,
+} from 'firebase/firestore';
 
 function QuizQuestion() {
+  const [documentSoal, setDocumentSoal] = useState(null);
   const [progress, setProgress] = useState(0);
   const [soal, setSoal] = useState([]);
   const [peserta, setPeserta] = useState([]);
@@ -12,10 +24,10 @@ function QuizQuestion() {
   const [kodeUnik, setKodeUnik] = useState("");
 
   // Fetch data quiz_kode dari API saat halaman di-load
-  const fetchSoal = async () => {
+  const fetchSoal = async (link) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(apiUrl + `/soal/ujian/${localStorage.getItem("kode")}/0`);
+      const response = await axios.get(apiUrl + link);
       if(response.status === 200){
         setSoal(response.data); 
         setKodeUnik(localStorage.getItem("kode_unik"));
@@ -30,7 +42,7 @@ function QuizQuestion() {
 
   const fetchNilai = async () => { 
     try {
-      const response = await axios.get(apiUrl + `/peserta_nilai/${localStorage.getItem("id_peserta")}/${localStorage.getItem("kode")}`);
+      const response = await axios.get(apiUrl + `/peserta_nilai/${localStorage.getItem("id_peserta")}/${localStorage.getItem("id_game")}`);
       if(response.status === 200){
         setPeserta(response.data.data); 
       }
@@ -45,10 +57,33 @@ function QuizQuestion() {
     window.location.href = "/quizzscreen";
   };
 
-  useEffect(() => { 
-    fetchSoal(); 
-  }, []);
 
+  useEffect(() => {
+    // Ambil `kode` dari localStorage
+    const kode = localStorage.getItem("id_game");
+    
+    // Buat referensi ke dokumen spesifik menggunakan `doc` dan `kode`
+    const documentRef = doc(firestore, `soalUjian${kode}`, kode);
+    
+    // Listener untuk memantau perubahan data secara real-time pada dokumen tertentu
+    const unsubscribe = onSnapshot(documentRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const data = {
+          id: snapshot.id,
+          ...snapshot.data(),
+        };
+        setDocumentSoal(data); // Simpan data ke state
+        fetchSoal(data.link_sebelum); 
+        console.log("Document data:", data); // Debug atau tampilkan data
+      } else {
+        console.log("No such document!");
+      }
+    });
+
+    // Bersihkan listener ketika komponen tidak digunakan
+    return () => unsubscribe();
+  }, []);
+ 
   // Handle progress bar loading effect
   useEffect(() => {
     if (!isLoading) {
@@ -81,7 +116,7 @@ function QuizQuestion() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-purple-700 text-white relative">
       {/* Top left corner indicator */}
       <div className="absolute top-4 left-4 bg-purple-900 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-lg">
-        11
+        {documentSoal.nomor_soal}
       </div>
 
       {/* Top center quiz label */}

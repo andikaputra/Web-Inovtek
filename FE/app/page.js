@@ -22,7 +22,7 @@ const KahootKodeScreen = () => {
       const response = await axios.get(apiUrl + "/quiz/kode?kode="+kode);
       if (response.status === 200) {
         setQuizKodes(response.data.data);
-        localStorage.setItem("kode", response.data.data.id);
+        localStorage.setItem("id_game", response.data.data.id);
         localStorage.setItem("kode_game", response.data.data.kode);
         masukRoom();
       }  
