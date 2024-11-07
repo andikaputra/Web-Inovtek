@@ -27,7 +27,7 @@ const KahootLogin = () => {
   const createPeserta = async () => {
     try {
       const response = await axios.post(apiUrl + "/peserta", { 
-        "id_quiz_kode":localStorage.getItem("kode"),
+        "id_quiz_kode":localStorage.getItem("id_game"),
         "kode_unik":kode
       });
       if(response.status == 200){
@@ -44,7 +44,7 @@ const KahootLogin = () => {
   const handleAdd = async () => {  
     try {
       // Menambahkan dokumen ke koleksi 'mulaiUjian'
-      const docRef = await addDoc(collection(firestore, `dataPeserta${localStorage.getItem("kode")}`), {
+      const docRef = await addDoc(collection(firestore, `dataPeserta${localStorage.getItem("id_game")}`), {
         kode_unik:kode,
       });
 
