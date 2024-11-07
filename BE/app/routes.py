@@ -401,3 +401,83 @@ def get_peserta_nilai(id_peserta, id_quiz_kode):
     }
 
     return jsonify({'message': 'Data retrieved successfully', 'data': nilai_data}), 200
+
+ 
+@quiz_bp.route('/submit_answers', methods=['POST'])
+def submit_answers():
+    data = request.get_json()
+    id_quiz_kode = data.get('id_quiz_kode')
+    id_peserta = data.get('id_peserta')
+    answers = data.get('answers', [])
+
+    if not id_quiz_kode or not id_peserta or not answers:
+        return jsonify({'error': 'Data tidak lengkap'}), 400
+
+    total_score = 0
+
+    # Loop melalui setiap jawaban
+    for answer in answers:
+        id_soal = answer.get('id_soal')
+        jawaban_text = answer.get('jawaban')
+        waktu_jawab = answer.get('waktu_jawab')  # Waktu yang diambil untuk menjawab soal
+        
+        # Dapatkan soal dari database berdasarkan id_soal
+        soal = Soal.query.filter_by(id=id_soal, id_quiz_kode=id_quiz_kode, deleted_at=None).first()
+        if not soal:
+            continue
+
+        # Dapatkan total waktu dari soal
+        total_waktu = soal.waktu.detik  # Anggap `total_waktu` dalam satuan detik
+
+        # Tentukan apakah jawaban benar atau salah
+        is_correct = False
+        correct_jawaban = None
+        for j in soal.soal_jawaban:
+            if j.text_jawaban == jawaban_text and j.correct:
+                is_correct = True
+                correct_jawaban = j  # Simpan jawaban yang benar untuk akses bobot
+
+        score_for_question = 0
+        if correct_jawaban and is_correct:
+            # Hitung score untuk soal ini berdasarkan waktu jawab dan bobot jawaban yang benar
+            score_for_question = ((waktu_jawab / total_waktu) * 100) * correct_jawaban.bobot
+            total_score += score_for_question
+
+        # Simpan jawaban peserta
+        peserta_jawaban = PesertaJawaban(
+            id_quiz_kode=id_quiz_kode,
+            id_soal=id_soal,
+            id_peserta=id_peserta,
+            jawaban=jawaban_text,
+            iscorrect=is_correct,
+            bobot=correct_jawaban.bobot if is_correct else 0,
+            created_at=datetime.utcnow()
+        )
+        db.session.add(peserta_jawaban)
+
+    # Cek apakah nilai peserta sudah ada sebelumnya
+    peserta_nilai = PesertaNilai.query.filter_by(id_quiz_kode=id_quiz_kode, id_peserta=id_peserta, deleted_at=None).first()
+    if peserta_nilai:
+        # Tambahkan nilai baru ke nilai yang sudah ada
+        peserta_nilai.nilai += total_score
+        peserta_nilai.updated_at = datetime.utcnow()
+    else:
+        # Tambah nilai baru jika belum ada
+        peserta_nilai = PesertaNilai(
+            id_quiz_kode=id_quiz_kode,
+            id_peserta=id_peserta,
+            nilai=total_score,
+            created_at=datetime.utcnow()
+        )
+        db.session.add(peserta_nilai)
+
+    db.session.commit()
+
+    return jsonify({
+        'message': 'Jawaban dan nilai peserta berhasil disimpan', 
+        'data':{
+            'total_score': total_score,
+            'score_for_question': score_for_question
+        }
+    }), 200
+
