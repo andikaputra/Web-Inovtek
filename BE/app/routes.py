@@ -553,3 +553,33 @@ def get_participant_ranking(id_quiz_kode, id_peserta):
 
     return jsonify(response), 200
 
+@quiz_bp.route('/top_winners/<int:id_quiz_kode>', methods=['GET'])
+def get_top_winners(id_quiz_kode):
+    # Ambil tiga peserta dengan nilai tertinggi berdasarkan id_quiz_kode
+    top_scores = (db.session.query(Peserta.kode_unik.label("name"), PesertaNilai.nilai.label("score"))
+                  .join(PesertaNilai, Peserta.id == PesertaNilai.id_peserta)
+                  .filter(PesertaNilai.id_quiz_kode == id_quiz_kode, PesertaNilai.deleted_at.is_(None))
+                  .order_by(PesertaNilai.nilai.desc())
+                  .limit(3)
+                  .all())
+
+    # Jika tidak ada peserta yang ditemukan
+    if not top_scores:
+        return jsonify({'error': 'No winners found for this quiz code'}), 404
+
+    # Map posisi ke dalam struktur data yang diinginkan
+    winners = []
+    for index, (name, score) in enumerate(top_scores):
+        position = index + 1
+        winner_data = {
+            "position": position,
+            "name": name,
+            "score": score,
+            "bgColor": "bg-gray-600" if position == 2 else "bg-yellow-500" if position == 1 else "bg-orange-500",
+            "color": "bg-gray-400" if position == 2 else "bg-yellow-400" if position == 1 else "bg-orange-400",
+            "height": "h-48" if position == 2 else "h-64" if position == 1 else "h-40",
+            "avatar": f"/src/img/mendali_{position}.png"
+        }
+        winners.append(winner_data)
+
+    return jsonify(winners), 200
