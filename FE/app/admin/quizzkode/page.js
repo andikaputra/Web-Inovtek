@@ -104,15 +104,16 @@ function QuizKodeCRUD() {
   };
 
     // Create new item
-  const handleAdd = async (status,customDocId) => {  
+  const handleAdd = async (status,data) => {  
     try {
-      let idCustom = String(customDocId); // Konversi ke string jika perlu
+      let idCustom = String(data.id); // Konversi ke string jika perlu
+      let kode = String(data.kode); // Konversi ke string jika perlu
        // Referensi dokumen dengan custom ID
       const docRef = doc(firestore, 'mulaiUjian', idCustom);
 
       // Menambahkan atau memperbarui dokumen dengan ID spesifik
       await setDoc(docRef, {
-        kode: customDocId,
+        kode: idCustom,
         status: status,
       });
 
@@ -120,6 +121,7 @@ function QuizKodeCRUD() {
       const docId = docRef.id;
       console.log("Document ID:", docId);
       localStorage.setItem("id_game", docId);
+      localStorage.setItem("kode_game", kode);
       window.location.href = "/admin/waitingroom";
       // Kamu bisa menggunakan docId ini sesuai kebutuhan
       // Misalnya, simpan ke dalam state atau kirim ke fungsi lain
@@ -189,7 +191,7 @@ function QuizKodeCRUD() {
                     </button>
                   </a>
                   <button
-                    onClick={() => handleAdd("belum",quiz.id)}
+                    onClick={() => handleAdd("belum",quiz)}
                     className="px-2 py-1 bg-blue-500 text-white rounded mr-2  hover:bg-red-600"
                   >
                     Mulai
