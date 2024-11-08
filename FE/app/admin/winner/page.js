@@ -39,35 +39,37 @@ function Scoreboard() {
             key={index}
             className="flex flex-col items-center"
             style={{
-              marginTop: winner.position === 1 ? "0" : winner.position === 2 ? "2rem" : "4rem", // Juara 1 lebih tinggi
+              marginTop: winner?.position === 1 ? "0" : winner?.position === 2 ? "2rem" : "4rem", // Juara 1 lebih tinggi
             }}
           >
             {/* Avatar */}
             <div
-              className={`w-24 h-24 ${winner.color} rounded-full flex items-center justify-center mb-2`}
+              className={`w-24 h-24 ${winner?.color} rounded-full flex items-center justify-center mb-2`}
             >
-              <img
-                src={winner.avatar}
-                alt={`${winner.name} Avatar`}
-                className="w-20 h-20 rounded-full"
-              />
+              {winner != null ? (
+                <img
+                  src={winner?.avatar}
+                  alt={`${winner?.name} Avatar`}
+                  className="w-20 h-20 rounded-full"
+                />
+                ): null }
             </div>
 
             {/* Position Badge */}
             <div
               className={`${
-                winner.bgColor
+                winner?.bgColor
               } text-white px-4 py-2 rounded-md mb-1 text-lg font-bold`}
             >
-              {winner.position}
+              {winner?.position}
             </div>
 
             {/* Podium - Name and Score */}
             <div
-              className={`${winner.bgColor} text-white w-28 text-center py-3 ${winner.height} rounded-t-md flex flex-col justify-end`}
+              className={`${winner?.bgColor} text-white w-28 text-center py-3 ${winner?.height} rounded-t-md flex flex-col justify-end`}
             >
-              <span className="text-lg font-semibold">{winner.name}</span>
-              <span className="text-sm">{winner.score}</span>
+              <span className="text-lg font-semibold">{winner?.name}</span>
+              <span className="text-sm">{winner?.score}</span>
             </div>
           </div>
         ))}
