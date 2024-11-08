@@ -21,8 +21,9 @@ const WaitingRoom = () => {
   // Fetch data quiz_kode dari API saat halaman di-load
   const fetchPeserta = async () => {
     try {
-      const response = await axios.get(apiUrl + "/peserta");
-      setPlayers(response.data.data);
+      let id_game = localStorage.getItem("id_game");
+      const response = await axios.get(`${apiUrl}/peserta/${id_game}`);
+      setPlayers(response.data);
     } catch (error) {
       console.error("Error fetching pesertas:", error);
     }
