@@ -33,10 +33,11 @@ const WaitingRoom = () => {
   const fetchPeserta = async () => {
     try {
       setPlayers([]);
-      const response = await axios.get(apiUrl + "/peserta");
-      setPlayers(response.data.data);
+      let id_game = localStorage.getItem("id_game");
+      const response = await axios.get(`${apiUrl }/peserta/${id_game}`);
+      setPlayers(response.data);
     } catch (error) {
-      console.error("Error fetching pesertas:", error);
+      console.log("Error fetching pesertas:", error);
     }
   };
 
