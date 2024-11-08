@@ -343,6 +343,34 @@ def get_peserta():
     return jsonify({'data': output}), 200
 
 
+@quiz_bp.route('/peserta/<int:id_quiz_kode>', methods=['GET'])
+def get_peserta_by_quiz_kode(id_quiz_kode):
+    try:
+        # Query to get all participants with the specified id_quiz_kode
+        peserta_list = Peserta.query.filter_by(id_quiz_kode=id_quiz_kode, deleted_at=None).all()
+        
+        # Check if any participants are found
+        if not peserta_list:
+            return jsonify({'message': 'No participants found for the specified quiz code'}), 404
+
+        # Prepare response data
+        peserta_data = []
+        for peserta in peserta_list:
+            peserta_data.append({
+                'id': peserta.id,
+                'id_quiz_kode': peserta.id_quiz_kode,
+                'kode_unik': peserta.kode_unik,
+                'created_at': peserta.created_at,
+                'updated_at': peserta.updated_at,
+            })
+
+        return jsonify(peserta_data), 200
+
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({'error': 'An error occurred while retrieving participants'}), 500
+
+
 @quiz_bp.route('/peserta', methods=['POST'])
 def create_peserta():
     data = request.get_json()
