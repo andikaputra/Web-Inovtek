@@ -189,12 +189,18 @@ function QuizAdmin() {
   const handleCorrectAnswer = (index) => { 
     console.log(answersQuiz);
     if(type == 1) {
-       const newAnswers = answersQuiz.map((answer, i) => (
-        i === index ? { ...answer, correct: !answer.correct } : answer
-    ));
-    
-    setAnswersQuiz(newAnswers); 
+      const newAnswers = answersQuiz.map((answer, i) => ({
+        ...answer,
+        correct: i === index,
+      }));
+      setAnswersQuiz(newAnswers); 
     }else if(type == 2){
+      const newAnswers = answersQuiz.map((answer, i) => (
+          i === index ? { ...answer, correct: !answer.correct } : answer
+      ));
+      
+      setAnswersQuiz(newAnswers); 
+    }else if(type == 3){
       const newAnswers = answersTF.map((answer, i) => ({
         ...answer,
         correct: i === index,
@@ -302,7 +308,7 @@ function QuizAdmin() {
         </div>
 
         {
-          type == 1 ? (
+          type == 1 || type == 2 ? (
             <div className="mb-6">
               <label className="block font-semibold mb-2">Pilihan Jawaban</label>
               {answersQuiz.map((answer, index) => (
@@ -347,7 +353,7 @@ function QuizAdmin() {
                 </div>
               ))}
             </div>
-          ) : type == 2 ? (
+          ) : type == 3 ? (
             <div className="mb-6">
               <label className="block font-semibold mb-2">Pilihan Jawaban</label>
               {answersTF.map((answer, index) => (
