@@ -40,7 +40,10 @@ function QuizQuestion() {
     window.location.href = "/admin/quizz";
   };
 
-  useEffect(() => {
+  useEffect(() => { 
+    if(sessionStorage.getItem("islogin") == "true"){
+      window.location.href = "/admin/login";
+    }
     // Ambil `kode` dari localStorage
     const kode = localStorage.getItem("id_game");
     
