@@ -107,6 +107,9 @@ const WaitingRoom = () => {
   }, []);
 
   useEffect(() => { 
+    if(sessionStorage.getItem("islogin") != "true"){
+      window.location.href = "/admin/login";
+    }
     setGamePin(localStorage.getItem("kode_game"));
     fetchPeserta();
   }, []);
