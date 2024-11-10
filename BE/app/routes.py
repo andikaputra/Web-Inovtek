@@ -1,5 +1,5 @@
 from flask import Blueprint, request,send_from_directory, abort,send_file, jsonify, current_app
-from .models import db, SoalJenis, Waktu, QuizKode, Soal, SoalJawaban, Peserta, PesertaNilai, PesertaJawaban
+from .models import db, SoalJenis, Waktu, QuizKode, Soal, SoalJawaban, Peserta, PesertaNilai, PesertaJawaban, Users
 from flask_cors import CORS
 from sqlalchemy.exc import IntegrityError  # Import IntegrityError
 from sqlalchemy.orm import joinedload
@@ -7,6 +7,7 @@ from sqlalchemy import func, desc, literal
 from sqlalchemy import desc
 from datetime import datetime
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import json
 
@@ -611,6 +612,21 @@ def get_top_winners(id_quiz_kode):
         winners.append(winner_data)
 
     return jsonify(winners), 200
+
+# ==========================================Login=======================================
+# Endpoint untuk registrasi (untuk membuat akun baru)
+@quiz_bp.route('/register', methods=['POST'])
+def register():
+    data = request.get_json()
+    username = data['username']
+    password = data['password']
+    
+    hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+    new_user = Users(username=username, password=hashed_password)
+    db.session.add(new_user)
+    db.session.commit()
+    
+    return jsonify({"message": "User registered successfully!"}), 201
 
 # Endpoint untuk login
 @quiz_bp.route('/login', methods=['POST'])
