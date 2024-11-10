@@ -147,6 +147,9 @@ function QuizAdmin() {
 
     // Fetch data dari API
   useEffect(() => {
+    if(sessionStorage.getItem("islogin") != "true"){
+      window.location.href = "/admin/login";
+    }
     const queryParams = new URLSearchParams(window.location.search);
     const kodeParam = queryParams.get("kode");
     setKode(kodeParam);
