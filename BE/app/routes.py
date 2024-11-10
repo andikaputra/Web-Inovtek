@@ -611,3 +611,17 @@ def get_top_winners(id_quiz_kode):
         winners.append(winner_data)
 
     return jsonify(winners), 200
+
+# Endpoint untuk login
+@quiz_bp.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    username = data['username']
+    password = data['password']
+    
+    user = Users.query.filter_by(username=username).first()
+    
+    if user and check_password_hash(user.password, password):
+        return jsonify({"message": "Login successful", "username": username}), 200
+    else:
+        return jsonify({"message": "Invalid username or password"}), 401
