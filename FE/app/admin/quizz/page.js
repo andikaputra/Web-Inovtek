@@ -39,8 +39,6 @@ function Quiz() {
     }
   };
 
-
-
   useEffect(() => {
     // Ambil `kode` dari localStorage
     const kode = localStorage.getItem("id_game");
@@ -211,8 +209,8 @@ function Quiz() {
       <div className="w-full max-w-lg bg-white shadow-lg rounded-lg overflow-hidden">
         {soal.file && (
           <img
-            src={soal.file}
-            alt="Suara Ayam"
+            src={`${apiUrl}/view/${soal.file.split('\\').pop()}`}
+            alt="Soal"
             className="w-full h-64 object-cover"
           />
         )}
@@ -229,20 +227,33 @@ function Quiz() {
 
           {/* Pilihan Jawaban */}
           <div className="grid grid-cols-2 gap-4">
-            {soal.soal_jawaban.map((jawaban, index) => (
-              <button
-                key={jawaban.id} 
-                className={`flex items-center justify-center font-semibold py-3 rounded-lg ${
-                  selectedAnswers.includes(jawaban.id)
-                    ? "ring-4 ring-green-400"
-                    : backgroundColors[index % backgroundColors.length]
-                }`}
-              >
-                {jawaban.text_jawaban} 
-                {/* Tampilkan ceklis jika tampilJawaban == true dan jawaban benar */}
-                {tampilJawaban && jawaban.correct && <span className="ml-2">✔️</span>}
-              </button>
-            ))}
+            {soal.soal_jawaban.map((jawaban, index) => {
+              // Cek apakah `text_jawaban` adalah path file atau teks biasa
+              const isFile = jawaban.text_jawaban && (jawaban.text_jawaban.includes('/') || jawaban.text_jawaban.match(/\.(pdf|jpg|jpeg|png|docx|txt)$/i));
+              const fileName = isFile ? jawaban.text_jawaban.split('\\').pop() : jawaban.text_jawaban;
+              return (
+                <button
+                  key={jawaban.id}
+                  onClick={() => handleSelectAnswer(jawaban.id)}
+                  className={`flex items-center justify-center font-semibold py-3 rounded-lg ${
+                    selectedAnswers.includes(jawaban.id)
+                      ? "ring-4 ring-green-400"
+                      : backgroundColors[index % backgroundColors.length]
+                  }`}
+                > 
+                  {isFile ? (
+                     <img
+                        src={`${apiUrl}/view/${fileName}`}
+                        alt="Soal" 
+                        className="w-3/2 h-20 object-cover"
+                      /> 
+                  ) : (
+                    answer.text_jawaban
+                  )} 
+                  {selectedAnswers.includes(jawaban.id) && <span className="ml-2">✔️</span>}
+                </button>
+              )
+            })}
           </div>
         </div>
       </div>
