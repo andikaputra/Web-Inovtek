@@ -21,7 +21,6 @@ function QuizDisplay() {
   const [isLoading, setIsLoading] = useState(true);
   const apiUrl = process.env.apiUrl;
 
-
   const fetchAnswerCounts = async (id_soal) => {
     try {
       const id_quiz_kode = localStorage.getItem("id_game");
@@ -197,24 +196,37 @@ function QuizDisplay() {
 
       {/* Answer Options */}
       <div className="grid grid-cols-2 gap-4 max-w-3xl w-full">
-        {soal.soal_jawaban.map((jawaban, index) => (
-          <button
-            key={jawaban.id}
-            onClick={() => increaseScore(index)}
-            className={`flex items-center justify-between w-full text-white text-lg font-semibold py-4 px-6 rounded-lg ${
-              index === 0
-                ? "bg-red-400"
-                : index === 1
-                ? "bg-blue-400"
-                : index === 2
-                ? "bg-yellow-400"
-                : "bg-green-400"
-            }`}
-          >
-            <span>{jawaban.text_jawaban}</span>
-            {jawaban.correct && <span className="text-2xl">✔</span>}
-          </button>
-        ))}
+        {soal.soal_jawaban.map((jawaban, index) => {
+          // Cek apakah `text_jawaban` adalah path file atau teks biasa
+              const isFile = jawaban.text_jawaban && (jawaban.text_jawaban.includes('/') || jawaban.text_jawaban.match(/\.(pdf|jpg|jpeg|png|docx|txt)$/i));
+              const fileName = isFile ? jawaban.text_jawaban.split('\\').pop() : jawaban.text_jawaban;
+          return (
+            <button
+              key={jawaban.id}
+              onClick={() => increaseScore(index)}
+              className={`flex items-center justify-between w-full text-white text-lg font-semibold py-4 px-6 rounded-lg ${
+                index === 0
+                  ? "bg-red-400"
+                  : index === 1
+                  ? "bg-blue-400"
+                  : index === 2
+                  ? "bg-yellow-400"
+                  : "bg-green-400"
+              }`}
+            >
+              {isFile ? (
+                   <img
+                      src={`${apiUrl}/view/${fileName}`}
+                      alt="Soal" 
+                      className="w-3/2 h-20 object-cover"
+                    /> 
+                ) : (
+                  answer.text_jawaban
+                )} 
+              {jawaban.correct && <span className="text-2xl">✔</span>}
+            </button>
+          )
+        })}
       </div>
     </div>
   );
