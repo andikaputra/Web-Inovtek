@@ -1,6 +1,14 @@
 from . import db  # Import db from the main app package instead of redefining it
 from datetime import datetime
 
+class Users(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(255), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.TIMESTAMP, nullable=False, default=datetime.utcnow)
+    updated_at = db.Column(db.TIMESTAMP, nullable=True, onupdate=datetime.utcnow)
+    deleted_at = db.Column(db.TIMESTAMP, nullable=True)  
+
 class QuizKode(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     kode = db.Column(db.String(255), nullable=False)
