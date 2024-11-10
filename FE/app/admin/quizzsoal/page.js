@@ -224,6 +224,10 @@ function QuizAdmin() {
     
   };
 
+  const handleBack = () =>{
+    window.location.href = "/admin/quizzkode";
+  }
+
   return (
     <div
       className="flex flex-col items-center justify-center min-h-screen bg-cover bg-center p-6"
@@ -399,11 +403,16 @@ function QuizAdmin() {
 
         
 
-        {/* Tombol Simpan */}
-        <div className="text-center">
+        <div className="flex space-x-2 justify-center">
+          <button
+            onClick={handleBack}
+            className="w-1/2 bg-gray-600 text-white px-6 py-2 rounded font-semibold hover:bg-blue-700"
+          >
+            Kembali
+          </button>
           <button
             onClick={handleSaveQuestion}
-            className="bg-blue-600 text-white px-6 py-2 rounded font-semibold hover:bg-blue-700"
+            className="w-1/2 bg-blue-600 text-white px-6 py-2 rounded font-semibold hover:bg-blue-700"
           >
             Simpan Soal
           </button>
