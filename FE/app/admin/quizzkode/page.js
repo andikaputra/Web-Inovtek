@@ -86,6 +86,9 @@ function QuizKodeCRUD() {
   };
 
   useEffect(() => {
+    if(sessionStorage.getItem("islogin") != "true"){
+      window.location.href = "/admin/login";
+    }
     fetchQuizKodes();
   }, []);
 
