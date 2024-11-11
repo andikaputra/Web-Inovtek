@@ -81,7 +81,7 @@ const KahootLogin = () => {
             placeholder="Kode Unik"
             value={kode}
             onChange={(e) => setKode(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded mb-4 focus:outline-none focus:border-purple-500"
+            className="w-full p-3 text-black border border-gray-300 rounded mb-4 focus:outline-none focus:border-purple-500"
           />
           <button className="w-full bg-black text-white py-3 rounded hover:bg-gray-800" onClick={() => createPeserta()}>
             OK, go!
