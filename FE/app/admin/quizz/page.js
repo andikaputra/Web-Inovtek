@@ -248,7 +248,7 @@ function Quiz() {
                         className="w-3/2 h-20 object-cover"
                       /> 
                   ) : (
-                    answer.text_jawaban
+                    jawaban.text_jawaban
                   )} 
                   {selectedAnswers.includes(jawaban.id) && <span className="ml-2">✔️</span>}
                 </button>
