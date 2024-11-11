@@ -51,6 +51,23 @@ const WaitingRoom = () => {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => { 
+      // Buat referensi ke dokumen menggunakan `doc` dan `kode` dari localStorage
+    const itemsCollection = collection(firestore, `dataPeserta${localStorage.getItem("id_game")}`);
+    
+    // Listener untuk memantau perubahan data secara real-time
+    const unsubscribe = onSnapshot(itemsCollection, (snapshot) => {
+      const items = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      fetchPeserta();
+    });
+
+    // Bersihkan listener ketika komponen tidak digunakan
+    return () => unsubscribe();
+  }, []);
+
   useEffect(() => {
     setGamePin(localStorage.getItem("kode_game"));
     fetchPeserta();
@@ -62,7 +79,7 @@ const WaitingRoom = () => {
       {/* Header */}
       <div className="fixed top-0 inset-x-0 max-w-3xl mx-auto flex justify-between items-center bg-white p-4 rounded-b-lg shadow-md">
         <div className="flex flex-col items-center">
-          <p className="text-sm font-light">Join at <span className="font-bold">www.vroot.com</span><br />or with the VRoot! app</p>
+          <p className="text-sm font-light text-black">Join at <span className="font-bold">www.vroot.com</span><br />or with the VRoot! app</p>
         </div>
         <div className="px-4 text-4xl font-bold text-gray-800">{gamePin}</div>
         <div> 
