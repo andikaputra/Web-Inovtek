@@ -41,7 +41,7 @@ function QuizQuestion() {
   };
 
   useEffect(() => { 
-    if(sessionStorage.getItem("islogin") == "true"){
+    if(sessionStorage.getItem("islogin") != "true"){
       window.location.href = "/admin/login";
     }
     // Ambil `kode` dari localStorage
