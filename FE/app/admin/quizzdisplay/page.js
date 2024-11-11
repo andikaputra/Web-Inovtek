@@ -221,7 +221,7 @@ function QuizDisplay() {
                       className="w-3/2 h-20 object-cover"
                     /> 
                 ) : (
-                  answer.text_jawaban
+                  jawaban.text_jawaban
                 )} 
               {jawaban.correct && <span className="text-2xl">✔</span>}
             </button>
