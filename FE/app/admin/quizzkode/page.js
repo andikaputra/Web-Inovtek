@@ -85,6 +85,21 @@ function QuizKodeCRUD() {
     setKode(quiz.kode);
   };
 
+  const deletePesertaByQuizId = async (idQuizKode) => {
+    try {
+      const response = await axios.delete(`${apiUrl}/delete_peserta`, {
+        params: {
+          id_quiz_kode: idQuizKode,
+        },
+      });
+      console.log(response.data.message);
+      return response.data;
+    } catch (error) {
+      console.error("Error deleting peserta:", error.response?.data?.message || error.message);
+      throw error;
+    }
+  };
+
   useEffect(() => {
     if(sessionStorage.getItem("islogin") != "true"){
       window.location.href = "/admin/login";
@@ -112,6 +127,8 @@ function QuizKodeCRUD() {
       let idCustom = String(data.id); // Konversi ke string jika perlu
       let kode = String(data.kode); // Konversi ke string jika perlu
        // Referensi dokumen dengan custom ID
+
+      await deletePesertaByQuizId(idCustom);
       const docRef = doc(firestore, 'mulaiUjian', idCustom);
 
       // Menambahkan atau memperbarui dokumen dengan ID spesifik
