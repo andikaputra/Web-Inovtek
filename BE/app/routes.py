@@ -406,6 +406,31 @@ def create_peserta():
 
     return jsonify({'message': 'Peserta created successfully', 'data': peserta_data}), 200
 
+
+@quiz_bp.route('/delete_peserta', methods=['DELETE'])
+def delete_peserta_by_id_quiz_kode():
+    try:
+        # Ambil id_quiz_kode dari query parameter
+        id_quiz_kode = request.args.get('id_quiz_kode')
+        if not id_quiz_kode:
+            return jsonify({'message': 'id_quiz_kode is required'}), 400
+
+        # Query semua data dengan id_quiz_kode yang sesuai dan belum di-soft delete
+        peserta_to_soft_delete = Peserta.query.filter_by(id_quiz_kode=id_quiz_kode, deleted_at=None).all()
+        if not peserta_to_soft_delete:
+            return jsonify({'message': f'No Peserta found with id_quiz_kode={id_quiz_kode}'}), 404
+
+        # Soft delete semua data dengan mengisi `deleted_at`
+        for peserta in peserta_to_soft_delete:
+            peserta.deleted_at = datetime.utcnow()
+
+        db.session.commit()
+
+        return jsonify({'message': f'Successfully soft deleted Peserta with id_quiz_kode={id_quiz_kode}'}), 200
+    except Exception as e:
+        return jsonify({'message': 'An error occurred', 'error': str(e)}), 500
+
+
     # ===============================PESERTA NILAI=============================================PESERTA
 @quiz_bp.route('/peserta_nilai/<int:id_peserta>/<int:id_quiz_kode>', methods=['GET'])
 def get_peserta_nilai(id_peserta, id_quiz_kode):
