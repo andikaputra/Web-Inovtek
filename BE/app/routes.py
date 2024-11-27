@@ -59,7 +59,7 @@ def get_quiz_kode_by_kode():
     if not kode:
         return jsonify({'error': 'Kode tidak disediakan'}), 400
 
-    quiz = QuizKode.query.filter_by(kode=kode, deleted_at=None).first()
+    quiz = QuizKode.query.filter_by(kode=kode, mulai=True, deleted_at=None).first()
     if not quiz:
         return jsonify({'message': 'QuizKode not found'}), 404
     quiz_data = {'id': quiz.id, 'kode': quiz.kode, 'created_at': quiz.created_at, 'updated_at': quiz.updated_at}
