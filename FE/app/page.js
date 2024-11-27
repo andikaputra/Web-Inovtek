@@ -31,7 +31,7 @@ const KahootKodeScreen = () => {
       setSwalProps({
           show: true,
           title: 'Informasi',
-          text: 'Kode yang dimasukkan tidak sesuai',
+          text: 'Ujian belum mulai / Kode tidak ditemukan',
       });
     }
   };
