@@ -663,7 +663,7 @@ def get_top_winners(id_quiz_kode):
     # Ambil tiga peserta dengan nilai tertinggi berdasarkan id_quiz_kode
     top_scores = (db.session.query(Peserta.kode_unik.label("name"), PesertaNilai.nilai.label("score"))
                   .join(PesertaNilai, Peserta.id == PesertaNilai.id_peserta)
-                  .filter(PesertaNilai.id_quiz_kode == id_quiz_kode, PesertaNilai.deleted_at.is_(None))
+                  .filter(PesertaNilai.id_quiz_kode == id_quiz_kode, Peserta.deleted_at.is_(None), PesertaNilai.deleted_at.is_(None))
                   .order_by(PesertaNilai.nilai.desc())
                   .limit(3)
                   .all())
