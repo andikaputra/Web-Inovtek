@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "axios"; 
 
 function Scoreboard() {
   const [winners, setWinners] = useState([]);
-  const apiUrl = process.env.apiUrl;
+  const apiUrl = process.env.apiUrl; 
 
   const fetchWinners = async () => {
     const idQuizCode = localStorage.getItem("id_game");
@@ -19,8 +19,12 @@ function Scoreboard() {
       ];
       setWinners(sortedWinners);
     } catch (error) {
-      console.error("Error fetching winners:", error);
+      console.log("Error fetching winners:", error);
     }
+  };
+
+  const handleBack = () => {
+    window.location.href = "/admin/quizzkode";
   };
 
   useEffect(() => {
@@ -29,10 +33,20 @@ function Scoreboard() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-purple-700 relative">
+      {/* Header */}
       <div className="text-center absolute top-10 text-white font-bold text-3xl">
         Quis
       </div>
 
+      {/* Back Button */}
+      <button
+        onClick={handleBack}
+        className="absolute top-5 right-5 bg-white text-purple-700 font-bold py-2 px-4 rounded-lg shadow-md hover:bg-purple-100"
+      >
+        Kembali
+      </button>
+
+      {/* Winners */}
       <div className="flex items-end space-x-6">
         {winners.map((winner, index) => (
           <div
@@ -52,7 +66,7 @@ function Scoreboard() {
                   alt={`${winner?.name} Avatar`}
                   className="w-20 h-20 rounded-full"
                 />
-                ): null }
+              ) : null}
             </div>
 
             {/* Position Badge */}
