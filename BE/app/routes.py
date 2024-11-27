@@ -567,12 +567,19 @@ def submit_answers():
 
 @quiz_bp.route('/answer_count/<int:id_quiz_kode>/<int:id_soal>', methods=['GET'])
 def answer_count(id_quiz_kode, id_soal):
-    # Dapatkan semua jawaban peserta untuk soal tertentu dalam quiz
-    peserta_jawaban = PesertaJawaban.query.filter_by(
-        id_quiz_kode=id_quiz_kode,
-        id_soal=id_soal,
-        deleted_at=None
-    ).all()
+    # Dapatkan semua jawaban peserta untuk soal tertentu dalam quiz,
+    # dengan peserta yang tidak memiliki deleted_at
+    peserta_jawaban = (
+        db.session.query(PesertaJawaban)
+        .join(Peserta, Peserta.id == PesertaJawaban.id_peserta)
+        .filter(
+            PesertaJawaban.id_quiz_kode == id_quiz_kode,
+            PesertaJawaban.id_soal == id_soal,
+            PesertaJawaban.deleted_at == None,
+            Peserta.deleted_at == None  # Tambahkan filter peserta.deleted_at IS NULL
+        )
+        .all()
+    )
 
     # Hitung jumlah pilihan untuk setiap opsi jawaban
     answer_count = {}
