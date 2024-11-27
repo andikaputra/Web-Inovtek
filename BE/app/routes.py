@@ -588,24 +588,33 @@ def answer_count(id_quiz_kode, id_soal):
             answer_count[jawaban.jawaban] = 0
         answer_count[jawaban.jawaban] += 1
 
+
     # Kembalikan hasil dalam format JSON
     return jsonify(answer_count), 200
 
 @quiz_bp.route('/top_scores/<int:id_quiz_code>', methods=['GET'])
 def get_top_scores(id_quiz_code):
     # Mengambil 5 data peserta nilai teratas berdasarkan id_quiz_code
-    top_scores = PesertaNilai.query.filter_by(id_quiz_kode=id_quiz_code, deleted_at=None) \
-                                   .order_by(desc(PesertaNilai.nilai)) \
-                                   .limit(5) \
-                                   .all()
+    top_scores = (
+        db.session.query(PesertaNilai, Peserta)
+        .join(Peserta, Peserta.id == PesertaNilai.id_peserta)
+        .filter(
+            PesertaNilai.id_quiz_kode == id_quiz_code,
+            PesertaNilai.deleted_at == None,
+            Peserta.deleted_at == None
+        )
+        .order_by(desc(PesertaNilai.nilai))
+        .limit(5)
+        .all()
+    )
     
     # Format data untuk respons JSON
     top_scores_data = [
         {
-            "name": peserta.peserta.kode_unik,  # Asumsi Peserta memiliki atribut 'name'
-            "score": peserta.nilai
+            "name": peserta.kode_unik,
+            "score": peserta_nilai.nilai
         }
-        for peserta in top_scores
+        for peserta_nilai, peserta in top_scores
     ]
 
     return jsonify(top_scores_data), 200
