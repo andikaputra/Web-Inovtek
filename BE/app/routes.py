@@ -87,6 +87,32 @@ def delete_quiz_kode(id):
     db.session.commit()
     return jsonify({'message': 'QuizKode deleted successfully'}), 200
 
+@quiz_bp.route('/quiz_mulai/<int:quiz_id>', methods=['PUT'])
+def update_mulai(quiz_id):
+    try:
+        # Cari QuizKode berdasarkan ID
+        quiz = QuizKode.query.filter_by(id=quiz_id, deleted_at=None).first()
+        if not quiz:
+            return jsonify({'message': 'QuizKode not found'}), 404
+
+        # Update field mulai menjadi True
+        quiz.mulai = True
+        quiz.updated_at = datetime.utcnow()
+
+        # Simpan perubahan ke database
+        db.session.commit()
+
+        return jsonify({'message': 'Quiz updated successfully', 'quiz': {
+            'id': quiz.id,
+            'kode': quiz.kode,
+            'mulai': quiz.mulai,
+            'updated_at': quiz.updated_at
+        }}), 200
+
+    except Exception as e:
+        return jsonify({'message': 'An error occurred', 'error': str(e)}), 500
+
+
 # =====================================SOAL JENIS==========================================================
 
 @quiz_bp.route('/soal_jenis', methods=['GET'])
