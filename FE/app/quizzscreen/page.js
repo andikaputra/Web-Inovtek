@@ -51,6 +51,15 @@ function Quiz() {
         };
         setDocumentSoal(data);
         fetchSoal(data.link_sebelum);
+        if(data.start_ujian == false){
+          if(data.next_page == "quizdisplay"){
+            soalSalah();
+          }else{
+            setIsLoading(true);
+          }
+        }else{
+          setIsLoading(false);
+        }
       } else {
         console.log("No such document!");
       }

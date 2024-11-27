@@ -114,7 +114,8 @@ function Quiz() {
         link_setelah:documentSoal['link_setelah'],
         nomor_soal:documentSoal['nomor_soal'],
         nomor_next_soal:documentSoal['nomor_next_soal'],
-        next_page:"quizdisplay"
+        next_page:"quizdisplay",
+        start_ujian:false
       }, { merge: true });
       
        window.location.href = "/admin/quizzdisplay";

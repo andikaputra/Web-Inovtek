@@ -79,7 +79,8 @@ const WaitingRoom = () => {
         link_setelah:`/soal/ujian/${localStorage.getItem("id_game")}/1`,
         nomor_soal:1,
         nomor_next_soal:2,
-        next_page:"question"
+        next_page:"question",
+        start_ujian:false
       }, { merge: true });
       
       mulaiUjian(); 

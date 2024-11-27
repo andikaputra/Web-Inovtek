@@ -95,7 +95,8 @@ function QuizDisplay() {
         link_setelah:documentSoal['link_setelah'],
         nomor_soal:documentSoal['nomor_soal'],
         nomor_next_soal:documentSoal['nomor_next_soal'],
-        next_page:"scoreboard"
+        next_page:"scoreboard",
+        start_ujian:false
       }, { merge: true });
       
       scoreboardPage()

@@ -116,7 +116,8 @@ function Scoreboard() {
         link_setelah:`/soal/ujian/${localStorage.getItem("id_game")}/${lsetelah}`,
         nomor_soal:nsoal,
         nomor_next_soal:nnext,
-        next_page:next_page
+        next_page:next_page,
+        start_ujian:false
       }, { merge: true });
 
       mulaiNext();
