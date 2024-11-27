@@ -34,7 +34,7 @@ function QuizQuestion() {
         fetchNilai();
       }
     } catch (error) {
-      console.error("Error fetching quiz_kode:", error);
+      console.log("Error fetching quiz_kode:", error);
     } finally {
       setIsLoading(false);
     }

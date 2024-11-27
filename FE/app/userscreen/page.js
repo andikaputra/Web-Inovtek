@@ -37,7 +37,7 @@ const KahootLogin = () => {
         handleAdd();
       }
     } catch (error) {
-      console.error("Error creating peserta:", error);
+      console.log("Error creating peserta:", error);
     }
   };
 
@@ -56,7 +56,7 @@ const KahootLogin = () => {
       // Kamu bisa menggunakan docId ini sesuai kebutuhan
       // Misalnya, simpan ke dalam state atau kirim ke fungsi lain
     } catch (error) {
-      console.error("Error adding document:", error);
+      console.log("Error adding document:", error);
     }
   }
 

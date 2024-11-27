@@ -25,7 +25,7 @@ const WaitingRoom = () => {
       const response = await axios.get(`${apiUrl}/peserta/${id_game}`);
       setPlayers(response.data);
     } catch (error) {
-      console.error("Error fetching pesertas:", error);
+      console.log("Error fetching pesertas:", error);
     }
   };
 

@@ -33,7 +33,7 @@ function Quiz() {
         setStartTime(response.data.waktu.detik); // Catat waktu mulai saat soal dimuat
       }
     } catch (error) {
-      console.error("Error fetching quiz_kode:", error);
+      console.log("Error fetching quiz_kode:", error);
     } finally {
       setIsLoading(false);
     }
@@ -178,7 +178,7 @@ function Quiz() {
             }
         }
     } catch (error) {
-        console.error("Error submitting answers:", error);
+        console.log("Error submitting answers:", error);
         alert("Terjadi kesalahan saat mengirim jawaban");
     }
   };

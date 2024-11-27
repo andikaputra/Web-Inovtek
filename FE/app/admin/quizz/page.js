@@ -33,7 +33,7 @@ function Quiz() {
         setCountdown(response.data.waktu.detik); // Inisialisasi countdown dari waktu.detik
       }
     } catch (error) {
-      console.error("Error fetching quiz_kode:", error);
+      console.log("Error fetching quiz_kode:", error);
     } finally {
       setIsLoading(false);
     }
@@ -155,7 +155,7 @@ function Quiz() {
       
   //     callback(items);
   //   }, (error) => {
-  //     console.error("Error fetching data:", error);
+  //     console.log("Error fetching data:", error);
   //   });
 
   //   return unsubscribe;

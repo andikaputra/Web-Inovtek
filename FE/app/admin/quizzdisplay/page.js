@@ -29,7 +29,7 @@ function QuizDisplay() {
         setAnswerCounts(response.data);
       }
     } catch (error) {
-      console.error("Error fetching answer counts:", error);
+      console.log("Error fetching answer counts:", error);
     }
   };
 
@@ -43,7 +43,7 @@ function QuizDisplay() {
         fetchAnswerCounts(response.data.id)
       }
     } catch (error) {
-      console.error("Error fetching quiz_kode:", error);
+      console.log("Error fetching quiz_kode:", error);
     } finally {
       setIsLoading(false);
     }

@@ -38,7 +38,7 @@ function RankingScreen() {
         setName(data.name);
       }
     } catch (error) {
-      console.error("Error fetching ranking data:", error);
+      console.log("Error fetching ranking data:", error);
     }
   };
 

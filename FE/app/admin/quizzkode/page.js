@@ -32,7 +32,7 @@ function QuizKodeCRUD() {
       const response = await axios.get(apiUrl + "/quiz_kode");
       setQuizKodes(response.data.data);
     } catch (error) {
-      console.error("Error fetching quiz_kode:", error);
+      console.log("Error fetching quiz_kode:", error);
     }
   };
 
@@ -43,7 +43,7 @@ function QuizKodeCRUD() {
       fetchQuizKodes();
       setKode("");
     } catch (error) {
-      console.error("Error creating quiz_kode:", error);
+      console.log("Error creating quiz_kode:", error);
     }
   };
 
@@ -55,7 +55,7 @@ function QuizKodeCRUD() {
       setEditingId(null);
       setKode("");
     } catch (error) {
-      console.error("Error updating quiz_kode:", error);
+      console.log("Error updating quiz_kode:", error);
     }
   };
 
@@ -65,7 +65,7 @@ function QuizKodeCRUD() {
       await axios.delete(apiUrl + `/quiz_kode/${id}`);
       fetchQuizKodes();
     } catch (error) {
-      console.error("Error deleting quiz_kode:", error);
+      console.log("Error deleting quiz_kode:", error);
     }
   };
 
@@ -146,7 +146,7 @@ function QuizKodeCRUD() {
       // Kamu bisa menggunakan docId ini sesuai kebutuhan
       // Misalnya, simpan ke dalam state atau kirim ke fungsi lain
     } catch (error) {
-      console.error("Error adding document:", error);
+      console.log("Error adding document:", error);
     }
   };
 

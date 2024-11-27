@@ -38,7 +38,7 @@ function Scoreboard() {
         setScores(response.data);
       }
     } catch (error) {
-      console.error("Error fetching top scores:", error);
+      console.log("Error fetching top scores:", error);
     } finally {
       setIsLoading(false); // Nonaktifkan loading setelah data di-fetch
     }

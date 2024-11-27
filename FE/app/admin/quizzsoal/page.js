@@ -50,7 +50,7 @@ function QuizAdmin() {
       console.log(response.data.data)
       setQuestionTypes(response.data.data); // Pastikan API mengembalikan data dalam format { types: [...] } 
     } catch (error) {
-      console.error("Error fetching quiz options:", error);
+      console.log("Error fetching quiz options:", error);
     }
   };
 
@@ -60,7 +60,7 @@ function QuizAdmin() {
       console.log(response.data.data)
       setTimeLimits(response.data.data); // Pastikan API mengembalikan data dalam format { types: [...] } 
     } catch (error) {
-      console.error("Error fetching quiz options:", error);
+      console.log("Error fetching quiz options:", error);
     }
   };
 
@@ -140,7 +140,7 @@ function QuizAdmin() {
         await axios.delete(`${apiUrl}/soal/${id}`);
         setQuizList(quizList.filter((question) => question.id !== id)); // Hapus soal dari state
       } catch (error) {
-        console.error('Failed to delete question', error);
+        console.log('Failed to delete question', error);
       }
     }
   };
