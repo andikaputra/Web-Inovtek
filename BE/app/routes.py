@@ -622,19 +622,28 @@ def get_top_scores(id_quiz_code):
 @quiz_bp.route('/ranking/<int:id_quiz_kode>/<int:id_peserta>', methods=['GET'])
 def get_participant_ranking(id_quiz_kode, id_peserta):
    # Buat subquery untuk menghitung peringkat berdasarkan nilai tertinggi
-    subquery = (db.session.query(
-                    PesertaNilai.id_peserta,
-                    PesertaNilai.nilai,
-                    func.rank().over(order_by=PesertaNilai.nilai.desc()).label("rank")
-                )
-                .filter(PesertaNilai.id_quiz_kode == id_quiz_kode,
-                        PesertaNilai.deleted_at.is_(None))
-                .subquery())
+    subquery = (
+        db.session.query(
+            PesertaNilai.id_peserta,
+            PesertaNilai.nilai,
+            func.rank().over(order_by=PesertaNilai.nilai.desc()).label("rank")
+        )
+        .join(Peserta, Peserta.id == PesertaNilai.id_peserta)  # Join dengan Peserta
+        .filter(
+            PesertaNilai.id_quiz_kode == id_quiz_kode,
+            PesertaNilai.deleted_at.is_(None),
+            Peserta.deleted_at.is_(None)  # Filter Peserta yang belum dihapus
+        )
+        .subquery()
+    )
 
     # Gabungkan subquery dengan tabel Peserta untuk mendapatkan kode_unik peserta
     peserta_nilai = (db.session.query(Peserta.kode_unik, subquery.c.nilai, subquery.c.rank)
                      .join(Peserta, Peserta.id == subquery.c.id_peserta)
-                     .filter(subquery.c.id_peserta == id_peserta)
+                     .filter(
+                            Peserta.deleted_at.is_(None),  # Pastikan Peserta belum dihapus
+                            subquery.c.id_peserta == id_peserta
+                        )
                      .first())
 
     # Jika peserta tidak ditemukan, kembalikan error
