@@ -93,10 +93,22 @@ function QuizKodeCRUD() {
         },
       });
       console.log(response.data.message);
-      return response.data;
+      // return response.data;
     } catch (error) {
-      console.error("Error deleting peserta:", error.response?.data?.message || error.message);
-      throw error;
+      console.log("Error deleting peserta:", error.response?.data?.message || error.message);
+      // throw error;
+    }
+  };
+
+    const handleUpdateMulai = async (quizId) => {
+    try {
+      // Panggil API Flask
+      const response = await axios.put(`${apiUrl}/quiz_mulai/${quizId}`);
+      // setMessage(`Success: ${response.data.message}`);
+    } catch (error) {
+      // Tangkap error jika API gagal
+      const errorMsg = error.response?.data?.message || 'An error occurred';
+      // setMessage(`Error: ${errorMsg}`);
     }
   };
 
@@ -124,6 +136,7 @@ function QuizKodeCRUD() {
     // Create new item
   const handleAdd = async (status,data) => {  
     try {
+      await handleUpdateMulai(data.id);
       let idCustom = String(data.id); // Konversi ke string jika perlu
       let kode = String(data.kode); // Konversi ke string jika perlu
        // Referensi dokumen dengan custom ID
