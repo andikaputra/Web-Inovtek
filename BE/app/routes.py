@@ -680,8 +680,8 @@ def get_top_winners(id_quiz_kode):
             "position": position,
             "name": name,
             "score": score,
-            "bgColor": "bg-gray-600" if position == 2 else "bg-yellow-500" if position == 1 else "bg-amber-500",
-            "color": "bg-gray-600" if position == 2 else "bg-yellow-400" if position == 1 else "bg-amber-500",
+            "bgColor": "bg-red-400" if position == 2 else "bg-yellow-500" if position == 1 else "bg-green-400",
+            "color": "bg-red-400" if position == 2 else "bg-yellow-400" if position == 1 else "bg-green-400",
             "height": "h-40" if position == 2 else "h-64" if position == 1 else "h-48",
             "avatar": f"/src/img/mendali_{position}.png"
         }
