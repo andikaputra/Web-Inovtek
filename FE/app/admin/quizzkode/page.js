@@ -112,6 +112,36 @@ function QuizKodeCRUD() {
     }
   };
 
+  const handleCopySoal = async (sourceQuizId) => {
+    try {
+      // Meminta kode_quiz tujuan dari pengguna
+      const targetQuizKode = prompt(
+        "Masukkan Kode Quiz tujuan untuk menyalin data soal:"
+      );
+
+      if (!targetQuizKode) {
+        alert("Kode Quiz tujuan harus diisi!");
+        return;
+      }
+
+      // Panggil API untuk menyalin soal dan jawaban
+      const response = await axios.post(apiUrl + "/copy_soal", {
+        source_quiz_id: sourceQuizId,
+        target_quiz_kode: targetQuizKode, // Gunakan kode_quiz sebagai tujuan
+      });
+
+      // Tampilkan pesan sukses
+      alert(response.data.message || "Data soal berhasil disalin!");
+      fetchQuizKodes(); // Refresh data quiz_kode
+    } catch (error) {
+      console.log("Error copying soal:", error);
+      alert(
+        error.response?.data?.error || "Terjadi kesalahan saat menyalin data soal."
+      );
+    }
+  };
+
+
   useEffect(() => {
     if(sessionStorage.getItem("islogin") != "true"){
       window.location.href = "/admin/login";
