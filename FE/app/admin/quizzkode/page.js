@@ -16,6 +16,7 @@ import {
 } from 'firebase/firestore';
 
 function QuizKodeCRUD() {
+  const [isMenuOpen, setIsMenuOpen] = useState(true);
   const [kode, setKode] = useState("");
   const [quizKodes, setQuizKodes] = useState([]);
   const [editingId, setEditingId] = useState(null); // Untuk ID yang sedang diedit
@@ -194,95 +195,157 @@ function QuizKodeCRUD() {
   };
 
   return (
-    <div
-      className="min-h-screen flex items-center justify-center bg-cover bg-center"
-      style={{
-        backgroundImage:  `url('/src/img/bg.jpg')`,
-      }}
-    >
-      <div className="container mx-auto p-6 bg-white bg-opacity-90 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-bold mb-4 text-center">CRUD Quiz Kode</h2>
+     <div className="min-h-screen flex">
+      {/* Sidebar */}
+      {isMenuOpen && (
+        <div className="w-1/6 bg-gray-800 text-white p-6">
+          <h2 className="text-2xl font-bold mb-6 text-center">Menu</h2>
+          <ul className="space-y-4">
+            <li>
+              <a
+                href="/admin/quizzkode"
+                className="block px-4 py-2 rounded hover:bg-gray-700"
+              >
+                Quiz Kode
+              </a>
+            </li>
+            <li>
+              <a
+                href="/sesivr"
+                className="block px-4 py-2 rounded hover:bg-gray-700"
+              >
+                Sesi VR
+              </a>
+            </li>
+            <li>
+              <a
+                href="/sesiar"
+                className="block px-4 py-2 rounded hover:bg-gray-700"
+              >
+                Sesi AR
+              </a>
+            </li>
+            <li>
+              <a
+                href="#"
+                onClick={() => setIsMenuOpen(false)}
+                className="block px-4 py-2 rounded hover:bg-gray-700"
+              >
+                Close Menu
+              </a>
+            </li> 
+          </ul>
+        </div>
+      )}
 
-        {/* Form Input */}
-        <form onSubmit={handleSubmit} className="mb-4">
-          <label className="block font-semibold mb-2">Kode</label>
-          <input
-            type="text"
-            value={kode}
-            onChange={(e) => setKode(e.target.value)}
-            className="p-2 border border-gray-300 rounded w-full mb-2"
-            placeholder="Masukkan kode"
-          />
+      {/* Main Content */}
+      <div className={`flex-1 ${isMenuOpen ? "ml-0" : "ml-0 md:ml-16"}`}>
+        {!isMenuOpen && (
           <button
-            type="submit"
-            className="px-4 py-2 bg-blue-500 text-white rounded font-semibold hover:bg-blue-600"
+            onClick={() => setIsMenuOpen(true)}
+            className="bg-gray-800 text-white px-4 py-2 rounded mb-4 hover:bg-gray-700"
           >
-            {editingId ? "Update" : "Tambah"}
+            Open Menu
           </button>
-        </form>
+        )}
+        <div
+          className="min-h-screen flex items-center justify-center bg-cover bg-center"
+        >
+          <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg">
+            <h2 className="text-2xl text-black font-bold mb-4 text-center">CRUD Quiz Kode</h2>
 
-        {/* Tabel Data Quiz Kode */}
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr> 
-              <th className="border border-gray-300 p-2">Kode</th>
-              <th className="border border-gray-300 p-2">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentItems.map((quiz) => (
-              <tr key={quiz.id}> 
-                <td className="border border-gray-300 p-2">{quiz.kode}</td>
-                <td className="border border-gray-300 p-2">
-                  <button
-                    onClick={() => handleEdit(quiz)}
-                    className="px-2 py-1 bg-yellow-500 text-white rounded mr-2 hover:bg-yellow-600"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => deleteQuizKode(quiz.id)}
-                    className="px-2 py-1 bg-red-500 text-white rounded mr-2  hover:bg-red-600"
-                  >
-                    Hapus
-                  </button>
-                  <a href={`/admin/quizzsoal?kode=${quiz.id}`}>
-                    <button 
-                      className="px-2 py-1 bg-green-500 text-white  mr-2 rounded  hover:bg-green-600"
-                    >
-                      Tambah Soal
-                    </button>
-                  </a>
-                  <button
-                    onClick={() => handleAdd("belum",quiz)}
-                    className="px-2 py-1 bg-blue-500 text-white rounded mr-2  hover:bg-red-600"
-                  >
-                    Mulai
-                  </button>
-                  
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+            {/* Form Input */}
+            <form onSubmit={handleSubmit} className="mb-4">
+              <label className="block font-semibold text-black mb-2">Kode</label>
+              <input
+                type="text"
+                value={kode}
+                onChange={(e) => setKode(e.target.value)}
+                className="p-2 border border-gray-300 rounded w-full mb-2"
+                placeholder="Masukkan kode"
+              />
+              <button
+                type="submit"
+                className="px-4 py-2 bg-blue-500 text-white rounded font-semibold hover:bg-blue-600"
+              >
+                {editingId ? "Update" : "Tambah"}
+              </button>
+            </form>
 
-        {/* Pagination Controls */}
-        <div className="flex justify-center mt-4">
-          <button
-            onClick={goToPreviousPage}
-            disabled={currentPage === 1}
-            className="px-3 py-1 mx-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
-          >
-            Previous
-          </button>
-          <span className="px-4 py-1">Page {currentPage} of {totalPages}</span>
-          <button
-            onClick={goToNextPage}
-            disabled={currentPage === totalPages}
-            className="px-3 py-1 mx-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
-          >
-            Next
-          </button>
+            {/* Tabel Data Quiz Kode */}
+            <table className="w-full border-collapse border border-gray-300">
+              <thead>
+                <tr> 
+                  <th className="border border-gray-300 p-2 text-black">Kode</th>
+                  <th className="border border-gray-300 p-2 text-black">Status</th>
+                  <th className="border border-gray-300 p-2 text-black">Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentItems.map((quiz) => (
+                  <tr key={quiz.id}> 
+                    <td className="border border-gray-300 p-2 text-black">{quiz.kode}</td>
+                    <td className="border border-gray-300 p-2 text-black">{
+                      quiz.mulai ? "Sudah Digunakan" : "Belum Digunakan"
+                    }</td>
+                    <td className="border border-gray-300 p-2">
+                      <button
+                        onClick={() => handleEdit(quiz)}
+                        className="px-2 py-1 bg-yellow-500 text-white rounded mr-2 hover:bg-yellow-600"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => deleteQuizKode(quiz.id)}
+                        className="px-2 py-1 bg-red-500 text-white rounded mr-2  hover:bg-red-600"
+                      >
+                        Hapus
+                      </button>
+                      <a href={`/admin/quizzsoal?kode=${quiz.id}`}>
+                        <button 
+                          className="px-2 py-1 bg-green-500 text-white  mr-2 rounded  hover:bg-green-600"
+                        >
+                          Tambah Soal
+                        </button>
+                      </a>
+                      <button
+                        onClick={() => handleCopySoal(quiz.id)}
+                        className="px-2 py-1 bg-purple-500 text-white  mr-2   rounded hover:bg-purple-600"
+                      >
+                        Copy Soal
+                      </button>
+                      <button
+                        onClick={() => handleAdd("belum",quiz)}
+                        className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-red-600"
+                      >
+                        Mulai
+                      </button>
+                      
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Pagination Controls */}
+            <div className="flex justify-center mt-4">
+              <button
+                onClick={goToPreviousPage}
+                disabled={currentPage === 1}
+                className="px-3 py-1 mx-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+              >
+                Previous
+              </button>
+              <span className="px-4 py-1 text-black">Page {currentPage} of {totalPages}</span>
+              <button
+                onClick={goToNextPage}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1 mx-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
