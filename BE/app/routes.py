@@ -1000,3 +1000,8 @@ def create_sesi_ar():
         return jsonify({"message": "Sesi created successfully", "data": new_sesi.to_dict()}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+
+@quiz_bp.route('/sesi/ar', methods=['GET'])
+def get_all_sesi_ar():
+    sesi_list = SesiMainAR.query.filter_by(deleted_at=None).all()
+    return jsonify([sesi.to_dict() for sesi in sesi_list]), 200
