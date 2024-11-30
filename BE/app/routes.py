@@ -967,3 +967,17 @@ def update_sesi(id):
         db.session.commit()
         return jsonify({"message": "Sesi updated successfully", "data": sesi.to_dict()}), 200
     except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+@quiz_bp.route('/sesi/vr/<int:id>', methods=['DELETE'])
+def delete_sesi(id):
+    try:
+        sesi = SesiMainVR.query.get(id)
+        if not sesi or sesi.deleted_at:
+            return jsonify({"error": "Sesi not found"}), 404
+
+        sesi.deleted_at = datetime.utcnow()
+        db.session.commit()
+        return jsonify({"message": "Sesi deleted successfully"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
