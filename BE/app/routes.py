@@ -328,6 +328,78 @@ def get_soal_ujian_by_quiz_kode(id_quiz_kode, offset=0):
         return jsonify({"error": "Soal not found or deleted"}), 404
 
 
+@quiz_bp.route('/copy_soal', methods=['POST'])
+def copy_soal():
+    try:
+        # Ambil data dari request
+        data = request.get_json()
+        source_quiz_id = data.get('source_quiz_id')
+        target_quiz_kode = data.get('target_quiz_kode')  # Gunakan kode untuk target quiz
+
+        if not source_quiz_id or not target_quiz_kode:
+            return jsonify({"error": "source_quiz_id and target_quiz_kode are required"}), 400
+
+        # Pastikan source_quiz_id valid
+        source_quiz = QuizKode.query.get(source_quiz_id)
+
+        if not source_quiz:
+            return jsonify({"error": "Source quiz not found"}), 404
+
+        # Periksa apakah target_quiz_kode sudah ada
+        existing_target_quiz = QuizKode.query.filter_by(kode=target_quiz_kode, deleted_at=None).first()
+        if existing_target_quiz:
+            return jsonify({"error": f"Quiz code '{target_quiz_kode}' already exists in the database"}), 400
+
+        # Buat entri baru untuk target_quiz
+        new_target_quiz = QuizKode(
+            kode=target_quiz_kode,
+            mulai=False,
+            created_at=datetime.utcnow()
+        )
+        db.session.add(new_target_quiz)
+        db.session.flush()  # Flush untuk mendapatkan ID target_quiz yang baru dibuat
+
+        # Salin soal dari source_quiz ke target_quiz
+        source_soal_list = Soal.query.filter_by(id_quiz_kode=source_quiz_id).all()
+        for soal in source_soal_list:
+            # Buat salinan soal baru
+            new_soal = Soal(
+                id_quiz_kode=new_target_quiz.id,  # Gunakan ID target_quiz yang baru dibuat
+                id_soal_jenis=soal.id_soal_jenis,
+                id_waktu=soal.id_waktu,
+                pertanyaan=soal.pertanyaan,
+                file=soal.file,
+                jenis_file=soal.jenis_file,
+                layout=soal.layout,
+                created_at=datetime.utcnow()
+            )
+            db.session.add(new_soal)
+            db.session.flush()  # Dapatkan ID soal baru sebelum commit
+
+            # Salin jawaban untuk soal ini
+            source_jawaban_list = SoalJawaban.query.filter_by(id_soal=soal.id).all()
+            for jawaban in source_jawaban_list:
+                new_jawaban = SoalJawaban(
+                    id_soal=new_soal.id,
+                    text_jawaban=jawaban.text_jawaban,
+                    correct=jawaban.correct,
+                    bobot=jawaban.bobot,
+                    created_at=datetime.utcnow()
+                )
+                db.session.add(new_jawaban)
+
+        # Commit semua perubahan
+        db.session.commit()
+        return jsonify({
+            "message": "Soal and answers successfully copied",
+            "target_quiz_id": new_target_quiz.id,
+            "target_quiz_kode": new_target_quiz.kode
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
 
 @quiz_bp.route('/download/<filename>', methods=['GET'])
 def download_file(filename):
