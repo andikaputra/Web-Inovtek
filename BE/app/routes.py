@@ -41,7 +41,7 @@ def get_quiz_kode():
     quiz_kodes = QuizKode.query.filter_by(deleted_at=None).all()
     output = []
     for quiz in quiz_kodes:
-        quiz_data = {'id': quiz.id, 'kode': quiz.kode, 'created_at': quiz.created_at, 'updated_at': quiz.updated_at}
+        quiz_data = {'id': quiz.id, 'kode': quiz.kode, 'mulai': quiz.mulai, 'created_at': quiz.created_at, 'updated_at': quiz.updated_at}
         output.append(quiz_data)
     return jsonify({'data': output}), 200
 
