@@ -922,3 +922,23 @@ def login():
         return jsonify({"message": "Login successful", "username": username}), 200
     else:
         return jsonify({"message": "Invalid username or password"}), 401
+
+# ====================================SESI MAIN VR=========================================
+@quiz_bp.route('/sesi/vr', methods=['POST'])
+def create_sesi():
+    try:
+        data = request.get_json()
+        new_sesi = SesiMainVR(
+            no_sesi=data['no_sesi'],
+            nama=data['nama'],
+            skenario=data['skenario'],
+            kota=data['kota'],
+            lokasi=data['lokasi'],
+            waktu_mulai=datetime.fromisoformat(data['waktu_mulai']) if data.get('waktu_mulai') else None,
+            waktu_selesai=datetime.fromisoformat(data['waktu_selesai']) if data.get('waktu_selesai') else None,
+        )
+        db.session.add(new_sesi)
+        db.session.commit()
+        return jsonify({"message": "Sesi created successfully", "data": new_sesi.to_dict()}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
