@@ -7,6 +7,7 @@ import { useLocation } from "react-router-dom";
 
 function QuizAdmin() {
   const [isOpenExcel, setIsOpenExcel] = useState(false);
+  const [isOpenDocs, setIsOpenDocs] = useState(false);
   const [kode, setKode] = useState("");
   const [question, setQuestion] = useState("");
   const [image, setImage] = useState(null);
@@ -36,6 +37,8 @@ function QuizAdmin() {
 
 
   const [fileExcel, setFileExcel] = useState(null);  
+  const [fileDocs, setFileDocs] = useState(null); 
+
   const [formData, setFormData] = useState({
     id_quiz_kode: '',
     id_soal_jenis: '',
@@ -77,6 +80,39 @@ function QuizAdmin() {
       alert(error.response?.data?.error || "An error occurred.");
     }
   };
+
+  const handleFileChangeDocs = (e) => {
+    setFileExcel(e.target.files[0]);
+  };
+
+  const handleUploadDocs = async (e) => {
+    e.preventDefault();
+    if (!fileExcel) {
+      alert("Please select a file.");
+      return;
+    }
+    if (!kode) {
+      alert("Please enter Quiz Kode.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", fileExcel);
+    formData.append("id_quiz_kode", kode);
+
+    try {
+      const response = await axios.post(`${apiUrl}/upload-soal-docs`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      fetchQuestions(kode);
+      alert(response.data.message);
+    } catch (error) {
+      alert(error.response?.data?.error || "An error occurred.");
+    }
+  };
+
 
  const fetchDataType = async () => {
     try { 
@@ -290,6 +326,40 @@ function QuizAdmin() {
                 <button
                   type="button"
                   onClick={() => setIsOpenExcel(false)}
+                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+                >
+                  Upload
+                </button>
+              </div>
+            </form>
+            {message && <p className="mt-4 text-center text-gray-700">{message}</p>}
+          </div>
+        </div>
+      )} 
+      {isOpenDocs && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4">Upload Soal Docs</h2>
+            <form onSubmit={handleUploadDocs}>
+              <div className="mb-4">
+                <label className="block text-gray-700 font-bold mb-2">Upload File</label>
+                <input
+                  type="file"
+                  accept=".docx"
+                  onChange={handleFileChangeDocs}
+                  className="w-full px-3 py-2 border rounded"
+                />
+              </div>
+              <div className="flex justify-end space-x-4">
+                <button
+                  type="button"
+                  onClick={() => setIsOpenDocs(false)}
                   className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
                 >
                   Cancel
