@@ -90,3 +90,26 @@ class SoalJawaban(db.Model):
     created_at = db.Column(db.TIMESTAMP, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.TIMESTAMP, nullable=True, onupdate=datetime.utcnow)
     deleted_at = db.Column(db.TIMESTAMP, nullable=True) 
+class SesiMainAR(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    no_sesi = db.Column(db.String(50), nullable=True)
+    nama = db.Column(db.String(100), nullable=True) 
+    kota = db.Column(db.String(100), nullable=True) 
+    lokasi = db.Column(db.String(100), nullable=True) 
+    waktu_mulai = db.Column(db.DateTime, nullable=True)
+    waktu_selesai = db.Column(db.DateTime, nullable=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, nullable=True, onupdate=datetime.utcnow)
+    deleted_at = db.Column(db.DateTime, nullable=True)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "no_sesi": self.no_sesi,
+            "nama": self.nama, 
+            "kota": self.kota,
+            "lokasi": self.lokasi,
+            "waktu_mulai": self.waktu_mulai.isoformat() if self.waktu_mulai else None,
+            "waktu_selesai": self.waktu_selesai.isoformat() if self.waktu_selesai else None
+        }
+
