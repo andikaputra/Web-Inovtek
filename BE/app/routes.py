@@ -1,5 +1,5 @@
 from flask import Blueprint, request,send_from_directory, abort,send_file, jsonify, current_app
-from .models import db, SoalJenis, Waktu, QuizKode, Soal, SoalJawaban, Peserta, PesertaNilai, PesertaJawaban, Users
+from .models import db, SoalJenis, Waktu, QuizKode, Soal, SoalJawaban, Peserta, PesertaNilai, PesertaJawaban, Users, SesiMainVR, SesiMainAR
 from flask_cors import CORS
 from sqlalchemy.exc import IntegrityError  # Import IntegrityError
 from sqlalchemy.orm import joinedload
@@ -9,7 +9,8 @@ from datetime import datetime
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
-import json
+import json 
+import openpyxl 
 
 quiz_bp = Blueprint('quiz', __name__)
 
@@ -422,6 +423,68 @@ def view_file(filename):
         abort(404, description="File not found")
 
     return send_file(file_path)
+
+@quiz_bp.route('/upload-soal-excel', methods=['POST'])
+def upload_soal():
+    try:
+        # Get `id_quiz_kode` from request form
+        id_quiz_kode = request.form.get('id_quiz_kode')
+        if not id_quiz_kode:
+            return jsonify({"error": "id_quiz_kode is required"}), 400
+
+        # Check if a file is included in the request
+        if 'file' not in request.files:
+            return jsonify({"error": "No file uploaded"}), 400
+
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({"error": "No file selected"}), 400
+
+        # Save file to server
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+
+        # Open the uploaded Excel file
+        workbook = openpyxl.load_workbook(file_path)
+        sheet = workbook.active
+
+        # Iterate over rows and process data
+        for row in sheet.iter_rows(min_row=2, values_only=True):  # Assuming first row is header
+            pertanyaan, jawaban_data = row  # Remove `id_quiz_kode` from Excel row
+
+            # Insert into Soal table
+            soal = Soal(
+                id_quiz_kode=id_quiz_kode,  # Use `id_quiz_kode` from request
+                id_soal_jenis=1,
+                id_waktu=1,
+                pertanyaan=pertanyaan,
+                layout=1,
+                created_at=datetime.utcnow(),
+            )
+            db.session.add(soal)
+            db.session.flush()  # Get the inserted ID for the soal
+
+            # Process jawaban_data (assuming it is a JSON-like string)
+            if jawaban_data:
+                jawaban_list = eval(jawaban_data)  # Convert string to list of dictionaries
+                for jawaban in jawaban_list:
+                    soal_jawaban = SoalJawaban(
+                        id_soal=soal.id,
+                        text_jawaban=jawaban.get('text_jawaban'),
+                        correct=jawaban.get('correct'),
+                        bobot=jawaban.get('bobot'),
+                        created_at=datetime.utcnow(),
+                    )
+                    db.session.add(soal_jawaban)
+
+        db.session.commit()
+        return jsonify({"message": "Data successfully uploaded and processed"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+    # finally:
+        # os.remove(file_path)  # Remove file after processing
  
  # ===============================PESERTA==============================================
 @quiz_bp.route('/peserta', methods=['GET'])
