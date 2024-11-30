@@ -3,3 +3,5 @@ Flask-SocketIO
 Flask-MySQLdb
 Flask-CORS
 Flask-SQLAlchemy
+openpyxl
+python-docx
