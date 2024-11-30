@@ -981,3 +981,22 @@ def delete_sesi(id):
         return jsonify({"message": "Sesi deleted successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+
+# ====================================SESI MAIN AR=========================================
+@quiz_bp.route('/sesi/ar', methods=['POST'])
+def create_sesi_ar():
+    try:
+        data = request.get_json()
+        new_sesi = SesiMainAR(
+            no_sesi=data['no_sesi'],
+            nama=data['nama'], 
+            kota=data['kota'],
+            lokasi=data['lokasi'],
+            waktu_mulai=datetime.fromisoformat(data['waktu_mulai']) if data.get('waktu_mulai') else None,
+            waktu_selesai=datetime.fromisoformat(data['waktu_selesai']) if data.get('waktu_selesai') else None,
+        )
+        db.session.add(new_sesi)
+        db.session.commit()
+        return jsonify({"message": "Sesi created successfully", "data": new_sesi.to_dict()}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
