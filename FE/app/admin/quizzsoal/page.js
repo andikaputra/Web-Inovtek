@@ -6,6 +6,7 @@ import { useLocation } from "react-router-dom";
 
 
 function QuizAdmin() {
+  const [isOpenExcel, setIsOpenExcel] = useState(false);
   const [kode, setKode] = useState("");
   const [question, setQuestion] = useState("");
   const [image, setImage] = useState(null);
@@ -34,6 +35,7 @@ function QuizAdmin() {
   const [timeLimits, setTimeLimits] = useState([]);
 
 
+  const [fileExcel, setFileExcel] = useState(null);  
   const [formData, setFormData] = useState({
     id_quiz_kode: '',
     id_soal_jenis: '',
@@ -43,6 +45,38 @@ function QuizAdmin() {
   });
   const [message, setMessage] = useState('');
   const apiUrl = process.env.apiUrl;
+
+  const handleFileChangeExcel = (e) => {
+    setFileExcel(e.target.files[0]);
+  };
+
+  const handleUploadExcel = async (e) => {
+    e.preventDefault();
+    if (!fileExcel) {
+      alert("Please select a file.");
+      return;
+    }
+    if (!kode) {
+      alert("Please enter Quiz Kode.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", fileExcel);
+    formData.append("id_quiz_kode", kode);
+
+    try {
+      const response = await axios.post(`${apiUrl}/upload-soal-excel`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      fetchQuestions(kode);
+      alert(response.data.message);
+    } catch (error) {
+      alert(error.response?.data?.error || "An error occurred.");
+    }
+  };
 
  const fetchDataType = async () => {
     try { 
@@ -237,7 +271,41 @@ function QuizAdmin() {
       style={{
         backgroundImage: `url('/src/img/bg.jpg')`,
       }}
-    >
+    > 
+      {isOpenExcel && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4">Upload Soal Excel</h2>
+            <form onSubmit={handleUploadExcel}>
+              <div className="mb-4">
+                <label className="block text-gray-700 font-bold mb-2">Upload File</label>
+                <input
+                  type="file"
+                  accept=".xlsx"
+                  onChange={handleFileChangeExcel}
+                  className="w-full px-3 py-2 border rounded"
+                />
+              </div>
+              <div className="flex justify-end space-x-4">
+                <button
+                  type="button"
+                  onClick={() => setIsOpenExcel(false)}
+                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+                >
+                  Upload
+                </button>
+              </div>
+            </form>
+            {message && <p className="mt-4 text-center text-gray-700">{message}</p>}
+          </div>
+        </div>
+      )} 
       <div className="max-w-3xl w-full bg-white bg-opacity-80 shadow-lg rounded-lg p-6 mb-8">
         <h2 className="text-2xl font-bold text-center mb-6">Input Soal Baru</h2>
 
@@ -418,6 +486,12 @@ function QuizAdmin() {
             className="w-1/2 bg-blue-600 text-white px-6 py-2 rounded font-semibold hover:bg-blue-700"
           >
             Simpan Soal
+          </button>
+          <button
+            onClick={() => setIsOpenExcel(true)}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Upload Soal Excel
           </button>
         </div>
       </div>
