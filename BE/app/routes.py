@@ -942,3 +942,8 @@ def create_sesi():
         return jsonify({"message": "Sesi created successfully", "data": new_sesi.to_dict()}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+
+@quiz_bp.route('/sesi/vr', methods=['GET'])
+def get_all_sesi():
+    sesi_list = SesiMainVR.query.filter_by(deleted_at=None).all()
+    return jsonify([sesi.to_dict() for sesi in sesi_list]), 200
