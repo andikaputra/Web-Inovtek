@@ -11,7 +11,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import json 
 import openpyxl 
+from docx import Document
 
+ 
 quiz_bp = Blueprint('quiz', __name__)
 
 CORS(quiz_bp)
@@ -485,6 +487,74 @@ def upload_soal():
         return jsonify({"error": str(e)}), 500
     # finally:
         # os.remove(file_path)  # Remove file after processing
+
+# API to upload Word file and process data
+@quiz_bp.route('/upload-soal-docs', methods=['POST'])
+def upload_soal_docs():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file uploaded"}), 400
+
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"error": "No file selected"}), 400
+
+    # Save the file
+    filename = secure_filename(file.filename)
+    file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+    file.save(file_path)
+
+    try:
+        # Get `id_quiz_kode` from request form
+        id_quiz_kode = request.form.get('id_quiz_kode')
+        if not id_quiz_kode:
+            return jsonify({"error": "id_quiz_kode is required"}), 400
+
+        # Read the Word document
+        document = Document(file_path)
+        current_soal = None
+
+        for paragraph in document.paragraphs:
+            text = paragraph.text.strip()
+
+            # Skip empty lines
+            if not text:
+                continue
+
+            # Detect question (Soal)
+            if text.startswith("Q:"):
+                pertanyaan = text[2:].strip()
+                current_soal = Soal(
+                    id_quiz_kode=id_quiz_kode,  # Example value, replace with actual quiz ID
+                    id_soal_jenis=1,  # Example value, replace with actual jenis ID
+                    id_waktu=1,  # Example value, replace with actual waktu ID
+                    pertanyaan=pertanyaan,
+                    layout=1,  # Example value
+                    created_at=datetime.utcnow(),
+                )
+                db.session.add(current_soal)
+                db.session.flush()  # Get the inserted ID
+            elif text.startswith("A:") and current_soal:
+                # Detect answer (SoalJawaban)
+                answer_data = text[2:].strip().split(";")
+                text_jawaban = answer_data[0]
+                correct = answer_data[1].lower() == "true"
+                bobot = int(answer_data[2]) if len(answer_data) > 2 else 0
+
+                soal_jawaban = SoalJawaban(
+                    id_soal=current_soal.id,
+                    text_jawaban=text_jawaban,
+                    correct=correct,
+                    bobot=bobot,
+                    created_at=datetime.utcnow(),
+                )
+                db.session.add(soal_jawaban)
+
+        db.session.commit()
+        return jsonify({"message": "Data successfully uploaded and processed"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
  
  # ===============================PESERTA==============================================
 @quiz_bp.route('/peserta', methods=['GET'])
