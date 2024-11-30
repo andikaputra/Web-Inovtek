@@ -947,3 +947,23 @@ def create_sesi():
 def get_all_sesi():
     sesi_list = SesiMainVR.query.filter_by(deleted_at=None).all()
     return jsonify([sesi.to_dict() for sesi in sesi_list]), 200
+
+@quiz_bp.route('/sesi/vr/<int:id>', methods=['PUT'])
+def update_sesi(id):
+    try:
+        sesi = SesiMainVR.query.get(id)
+        if not sesi or sesi.deleted_at:
+            return jsonify({"error": "Sesi not found"}), 404
+
+        data = request.get_json()
+        sesi.no_sesi = data.get('no_sesi', sesi.no_sesi)
+        sesi.nama = data.get('nama', sesi.nama)
+        sesi.skenario = data.get('skenario', sesi.skenario)
+        sesi.kota = data.get('kota', sesi.kota)
+        sesi.lokasi = data.get('lokasi', sesi.lokasi)
+        sesi.waktu_mulai = datetime.fromisoformat(data['waktu_mulai']) if data.get('waktu_mulai') else sesi.waktu_mulai
+        sesi.waktu_selesai = datetime.fromisoformat(data['waktu_selesai']) if data.get('waktu_selesai') else sesi.waktu_selesai
+
+        db.session.commit()
+        return jsonify({"message": "Sesi updated successfully", "data": sesi.to_dict()}), 200
+    except Exception as e:
