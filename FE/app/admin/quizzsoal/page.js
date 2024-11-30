@@ -377,11 +377,11 @@ function QuizAdmin() {
         </div>
       )} 
       <div className="max-w-3xl w-full bg-white bg-opacity-80 shadow-lg rounded-lg p-6 mb-8">
-        <h2 className="text-2xl font-bold text-center mb-6">Input Soal Baru</h2>
+        <h2 className="text-2xl font-bold text-center mb-6 text-black">Input Soal Baru</h2>
 
         {/* Input Pertanyaan */}
         <div className="mb-4"> 
-          <label className="block font-semibold mb-2">Pertanyaan</label>
+          <label className="block font-semibold mb-2 text-black">Pertanyaan</label>
           <input
             type="text"
             value={question}
@@ -393,7 +393,7 @@ function QuizAdmin() {
 
         {/* Input Tipe Pertanyaan */}
         <div className="mb-4">
-          <label className="block font-semibold mb-2">Tipe Pertanyaan</label>
+          <label className="block font-semibold mb-2 text-black">Tipe Pertanyaan</label>
           <select
             value={type}
             onChange={(e) => setType(e.target.value)}
@@ -417,7 +417,7 @@ function QuizAdmin() {
 
         {/* Batas Waktu */}
         <div className="mb-4">
-          <label className="block font-semibold mb-2">Batas Waktu (detik)</label>
+          <label className="block font-semibold mb-2 text-black">Batas Waktu (detik)</label>
           <select
             value={timeLimit}
             onChange={(e) => setTimeLimit(e.target.value)}
@@ -440,7 +440,7 @@ function QuizAdmin() {
 
         {/* Input Gambar */}
         <div className="mb-4">
-          <label className="block font-semibold mb-2">Gambar Soal</label>
+          <label className="block font-semibold mb-2 text-black">Gambar Soal</label>
           <input type="file" onChange={handleImageChange} className="w-full" />
           {image && (
             <div className="mt-4">
@@ -455,7 +455,7 @@ function QuizAdmin() {
         {
           type == 1 || type == 2 ? (
             <div className="mb-6">
-              <label className="block font-semibold mb-2">Pilihan Jawaban</label>
+              <label className="block font-semibold mb-2 text-black">Pilihan Jawaban</label>
               {answersQuiz.map((answer, index) => (
                 <div key={index} className="flex items-center mb-2">
                   {!answer.image && (
@@ -500,7 +500,7 @@ function QuizAdmin() {
             </div>
           ) : type == 3 ? (
             <div className="mb-6">
-              <label className="block font-semibold mb-2">Pilihan Jawaban</label>
+              <label className="block font-semibold mb-2 text-black">Pilihan Jawaban</label>
               {answersTF.map((answer, index) => (
                 <div key={index} className="flex items-center mb-2">
                   
@@ -524,7 +524,7 @@ function QuizAdmin() {
             </div>
           ) : type == 3 ? (
             <div className="mb-6">
-              <label className="block font-semibold mb-2">Jawaban</label>
+              <label className="block font-semibold mb-2 text-black">Jawaban</label>
               {answersUraian.map((answer, index) => (
                 <div key={index} className="flex items-center mb-2">
                   {!answer.image && (
@@ -563,6 +563,12 @@ function QuizAdmin() {
           >
             Upload Soal Excel
           </button>
+          <button
+            onClick={() => setIsOpenDocs(true)}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+          >
+            Upload Soal Docs
+          </button>
         </div>
       </div>
 
@@ -583,7 +589,7 @@ function QuizAdmin() {
             }}
           >
             <div>
-              <h2>{index + 1}. {question.pertanyaan}</h2>
+              <h2 className="text-black">{index + 1}. {question.pertanyaan}</h2>
               {question.file && (
                 <p>
                   <a href={apiUrl + `/view/${question.file.split('\\').pop()}`} target="_blank" rel="noopener noreferrer">
@@ -591,7 +597,7 @@ function QuizAdmin() {
                   </a>
                 </p>
               )}
-              <h3>Answers:</h3>
+              <h3 className=" text-black">Answers:</h3>
               <ul>
                 {question.jawaban.map((answer, i) => {
                   const alphabet = String.fromCharCode(65 + i);
