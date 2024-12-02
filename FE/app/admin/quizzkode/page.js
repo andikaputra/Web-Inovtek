@@ -40,6 +40,10 @@ function QuizKodeCRUD() {
   // Create data baru
   const createQuizKode = async () => {
     try {
+      if(!kode){
+        alert("Harap Masukkan Kode")
+        return;
+      }
       const response = await axios.post(apiUrl + "/quiz_kode", { kode });
       fetchQuizKodes();
       setKode("");
@@ -51,6 +55,10 @@ function QuizKodeCRUD() {
   // Update data quiz_kode
   const updateQuizKode = async (id) => {
     try {
+      if(!kode){
+        alert("Harap Masukkan Kode")
+        return;
+      }
       const response = await axios.put(apiUrl + `/quiz_kode/${id}`, { kode });
       fetchQuizKodes();
       setEditingId(null);
