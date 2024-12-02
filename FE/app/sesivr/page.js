@@ -456,7 +456,7 @@ function SesiCRUD() {
               <button
                 onClick={goToPreviousPage}
                 disabled={currentPage === 1}
-                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded disabled:opacity-50"
+                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded disabled:opacity-50 text-black"
               >
                 Previous
               </button>
@@ -466,7 +466,7 @@ function SesiCRUD() {
               <button
                 onClick={goToNextPage}
                 disabled={currentPage === totalPages}
-                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded disabled:opacity-50"
+                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded disabled:opacity-50 text-black"
               >
                 Next
               </button>

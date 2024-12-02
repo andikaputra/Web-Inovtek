@@ -332,7 +332,7 @@ function QuizKodeCRUD() {
               <button
                 onClick={goToPreviousPage}
                 disabled={currentPage === 1}
-                className="px-3 py-1 mx-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+                className="px-3 py-1 mx-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50 text-black"
               >
                 Previous
               </button>
@@ -340,7 +340,7 @@ function QuizKodeCRUD() {
               <button
                 onClick={goToNextPage}
                 disabled={currentPage === totalPages}
-                className="px-3 py-1 mx-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
+                className="px-3 py-1 mx-1 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50 text-black"
               >
                 Next
               </button>
