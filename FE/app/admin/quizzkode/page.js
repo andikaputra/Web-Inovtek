@@ -71,6 +71,11 @@ function QuizKodeCRUD() {
   // Delete data quiz_kode
   const deleteQuizKode = async (id) => {
     try {
+      const confirmDelete = window.confirm("Anda yakin ingin menghapus kode ini?");
+      if (!confirmDelete) {
+        return; // Exit the function if the user cancels
+      }
+
       await axios.delete(apiUrl + `/quiz_kode/${id}`);
       fetchQuizKodes();
     } catch (error) {
