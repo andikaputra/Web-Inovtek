@@ -41,24 +41,24 @@ function Login() {
 
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-600">Username</label>
+            <label className="block mb-1 text-sm font-medium  text-black">Username</label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400  text-black"
             />
           </div>
 
           <div>
-            <label className="block mb-1 text-sm font-medium text-gray-600">Password</label>
+            <label className="block mb-1 text-sm font-medium text-black">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400 text-black"
             />
           </div>
 
