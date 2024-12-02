@@ -363,7 +363,7 @@ def copy_soal():
         db.session.flush()  # Flush untuk mendapatkan ID target_quiz yang baru dibuat
 
         # Salin soal dari source_quiz ke target_quiz
-        source_soal_list = Soal.query.filter_by(id_quiz_kode=source_quiz_id).all()
+        source_soal_list = Soal.query.filter_by(id_quiz_kode=source_quiz_id, deleted_at=None).all()
         for soal in source_soal_list:
             # Buat salinan soal baru
             new_soal = Soal(
@@ -380,7 +380,7 @@ def copy_soal():
             db.session.flush()  # Dapatkan ID soal baru sebelum commit
 
             # Salin jawaban untuk soal ini
-            source_jawaban_list = SoalJawaban.query.filter_by(id_soal=soal.id).all()
+            source_jawaban_list = SoalJawaban.query.filter_by(id_soal=soal.id, deleted_at=None).all()
             for jawaban in source_jawaban_list:
                 new_jawaban = SoalJawaban(
                     id_soal=new_soal.id,
