@@ -274,7 +274,7 @@ function QuizKodeCRUD() {
                 type="text"
                 value={kode}
                 onChange={(e) => setKode(e.target.value)}
-                className="p-2 border border-gray-300 rounded w-full mb-2"
+                className="p-2 border border-gray-300 rounded w-full mb-2 text-black"
                 placeholder="Masukkan kode"
               />
               <button
