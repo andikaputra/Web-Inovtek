@@ -14,12 +14,14 @@ import {
   onSnapshot,
   setDoc,
 } from 'firebase/firestore';
+import SweetAlert2 from 'react-sweetalert2';
 
 function QuizKodeCRUD() {
   const [isMenuOpen, setIsMenuOpen] = useState(true);
   const [kode, setKode] = useState("");
   const [quizKodes, setQuizKodes] = useState([]);
   const [editingId, setEditingId] = useState(null); // Untuk ID yang sedang diedit
+  const [swalProps, setSwalProps] = useState({});
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,9 +41,13 @@ function QuizKodeCRUD() {
 
   // Create data baru
   const createQuizKode = async () => {
-    try {
-      if(!kode){
-        alert("Harap Masukkan Kode")
+    try { 
+      if(!kode.trim()){
+        setSwalProps({
+            show: true,
+            title: 'Informasi',
+            text: 'Harap Masukkan Kode Quiz',
+        }); 
         return;
       }
       const response = await axios.post(apiUrl + "/quiz_kode", { kode });
@@ -55,8 +61,12 @@ function QuizKodeCRUD() {
   // Update data quiz_kode
   const updateQuizKode = async (id) => {
     try {
-      if(!kode){
-        alert("Harap Masukkan Kode")
+      if(!kode.trim()){
+        setSwalProps({
+            show: true,
+            title: 'Informasi',
+            text: 'Harap Masukkan Kode Quiz',
+        });  
         return;
       }
       const response = await axios.put(apiUrl + `/quiz_kode/${id}`, { kode });
@@ -134,7 +144,11 @@ function QuizKodeCRUD() {
       );
 
       if (!targetQuizKode) {
-        alert("Kode Quiz tujuan harus diisi!");
+        setSwalProps({
+            show: true,
+            title: 'Informasi',
+            text: 'Kode Quiz tujuan harus diisi!',
+        });   
         return;
       }
 
@@ -145,13 +159,19 @@ function QuizKodeCRUD() {
       });
 
       // Tampilkan pesan sukses
-      alert(response.data.message || "Data soal berhasil disalin!");
+      setSwalProps({
+          show: true,
+          title: 'Informasi',
+          text: response.data.message || "Data soal berhasil disalin!",
+      });    
       fetchQuizKodes(); // Refresh data quiz_kode
     } catch (error) {
       console.log("Error copying soal:", error);
-      alert(
-        error.response?.data?.error || "Terjadi kesalahan saat menyalin data soal."
-      );
+      setSwalProps({
+          show: true,
+          title: 'Informasi',
+          text: error.response?.data?.error || "Terjadi kesalahan saat menyalin data soal.",
+      });     
     }
   };
 
@@ -180,6 +200,14 @@ function QuizKodeCRUD() {
     // Create new item
   const handleAdd = async (status,data) => {  
     try {
+      if(data.mulai){
+        setSwalProps({
+            show: true,
+            title: 'Informasi',
+            text: "Kode sudah digunakan",
+        });  
+        return;    
+      }
       await handleUpdateMulai(data.id);
       let idCustom = String(data.id); // Konversi ke string jika perlu
       let kode = String(data.kode); // Konversi ke string jika perlu
@@ -210,6 +238,7 @@ function QuizKodeCRUD() {
   return (
      <div className="min-h-screen flex">
       {/* Sidebar */}
+      <SweetAlert2 {...swalProps} />
       {isMenuOpen && (
         <div className="w-1/6 bg-gray-800 text-white p-6">
           <h2 className="text-2xl font-bold mb-6 text-center">Menu</h2>
