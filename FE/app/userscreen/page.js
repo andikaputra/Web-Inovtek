@@ -13,9 +13,12 @@ import {
   onSnapshot,
   setDoc,
 } from 'firebase/firestore';
+import SweetAlert2 from 'react-sweetalert2';
 
 const KahootLogin = () => {
   const [kode, setKode] = useState("");
+  const [swalProps, setSwalProps] = useState({});
+
    const mulaiUjian = async () => {
     window.location.href = "/waitingscreen";
   };
@@ -26,6 +29,14 @@ const KahootLogin = () => {
   // Create data baru
   const createPeserta = async () => {
     try {
+      if(!kode.trim()){
+        setSwalProps({
+            show: true,
+            title: 'Informasi',
+            text: 'Harap Masukkan Kode Unik',
+        });  
+        return;
+      }
       const response = await axios.post(apiUrl + "/peserta", { 
         "id_quiz_kode":localStorage.getItem("id_game"),
         "kode_unik":kode
@@ -63,6 +74,7 @@ const KahootLogin = () => {
   return (
     <div className="flex items-center justify-center h-screen bg-purple-700 relative overflow-hidden">
       {/* Background pattern */}
+      <SweetAlert2 {...swalProps} />
       <div className="absolute inset-0 flex items-center justify-center opacity-10">
         <div className="flex flex-wrap justify-center">
           <div className="text-9xl text-purple-500 font-bold rotate-45">?</div>
