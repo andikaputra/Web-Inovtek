@@ -4,6 +4,9 @@ import axios from "axios";
 import * as XLSX from "xlsx";
 
 function SesiCRUD() {
+
+  const [isOpenImport, setIsOpenImport] = useState(false);
+  const [file, setFile] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(true); 
  const [sesiList, setSesiList] = useState([]);
   const [filteredSesiList, setFilteredSesiList] = useState([]);
@@ -140,6 +143,43 @@ function SesiCRUD() {
   const totalPages = Math.ceil(filteredSesiList.length / itemsPerPage);
   const goToNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
   const goToPreviousPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+
+    // Fungsi untuk menangani perubahan file
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]); 
+  };
+
+  // Fungsi untuk mengunggah file
+  const handleUpload = async (e) => {
+    e.preventDefault();
+
+    if (!file) {
+      alert("Please select a file first.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await axios.post(
+        `${process.env.apiUrl}/import_sesi_main_vr`, // Sesuaikan endpoint Anda
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      setIsOpenImport(false);
+      fetchSesi();
+      alert("Berhasil Import Data");
+    } catch (err) {
+      alert(
+        err.response?.data?.message || "An error occurred while uploading the file."
+      ); 
+    }
+  };
 
   useEffect(() => {
     const storedKota = localStorage.getItem("kota_vr");
@@ -380,7 +420,39 @@ function SesiCRUD() {
               </div>
             </form>
 
-
+               {isOpenImport && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                  <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+                    <h2 className="text-xl font-bold mb-4">Upload Excel</h2>
+                    <form onSubmit={handleUpload}>
+                      <div className="mb-4">
+                        <label className="block text-gray-700 font-bold mb-2">Upload File</label>
+                        <input
+                          type="file"
+                          accept=".xlsx"
+                          onChange={handleFileChange}
+                          className="w-full px-3 py-2 border rounded"
+                        />
+                      </div>
+                      <div className="flex justify-end space-x-4">
+                        <button
+                          type="button"
+                          onClick={() => setIsOpenImport(false)}
+                          className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+                        >
+                          Upload
+                        </button>
+                      </div>
+                    </form> 
+                  </div>
+                </div>
+              )} 
             {/* Search Bar and Export Button */}
             <div className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
               {/* Search Bar */}
@@ -395,7 +467,14 @@ function SesiCRUD() {
               </div>
 
               {/* Export Button */}
+
               <div className="text-right">
+                <button
+                  onClick={() => setIsOpenImport(true)}
+                  className="bg-yellow-500 hover:bg-green-700 text-white font-bold py-2 px-4 mr-2 rounded"
+                >
+                  Import
+                </button>
                 <button
                   onClick={handleExport}
                   className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
