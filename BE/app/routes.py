@@ -982,6 +982,47 @@ def delete_sesi(id):
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+@quiz_bp.route('/import_sesi_main_vr', methods=['POST'])
+def import_sesi_main_vr():
+    if 'file' not in request.files:
+        return jsonify({'message': 'No file part'}), 400
+
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'message': 'No selected file'}), 400
+
+    try:
+        workbook = openpyxl.load_workbook(file)
+        sheet = workbook.active
+
+        imported_data = []
+        for row in sheet.iter_rows(min_row=2, values_only=True):  # Mulai dari baris kedua (lewat header)
+            no_sesi, nama, skenario, kota, lokasi, waktu_mulai, waktu_selesai = row
+
+            waktu_mulai_dt = datetime.strptime(waktu_mulai, '%Y-%m-%d %H:%M:%S') if waktu_mulai else None
+            waktu_selesai_dt = datetime.strptime(waktu_selesai, '%Y-%m-%d %H:%M:%S') if waktu_selesai else None
+
+            sesi = SesiMainVR(
+                no_sesi=no_sesi,
+                nama=nama,
+                skenario=skenario,
+                kota=kota,
+                lokasi=lokasi,
+                waktu_mulai=waktu_mulai_dt,
+                waktu_selesai=waktu_selesai_dt
+            )
+            db.session.add(sesi)
+            imported_data.append(sesi.to_dict())
+
+        db.session.commit()
+        return jsonify({'message': 'Data imported successfully', 'data': imported_data}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': 'Error importing data', 'error': str(e)}), 500
+
+
+
 # ====================================SESI MAIN AR=========================================
 @quiz_bp.route('/sesi/ar', methods=['POST'])
 def create_sesi_ar():
