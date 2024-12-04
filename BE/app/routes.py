@@ -1044,4 +1044,12 @@ def delete_sesi_ar(id):
 @quiz_bp.route('/log_session', methods=['GET'])
 def get_all_logs():
     logs = LogSession.query.all()
-    return jsonify([log.to_dict() for log in logs])
+    return jsonify([log.to_dict() for log in logs])    return jsonify([log.to_dict() for log in logs])
+
+# Endpoint untuk mengambil data berdasarkan ID
+@quiz_bp.route('/log_session/<int:id>', methods=['GET'])
+def get_log_by_id(id):
+    log = LogSession.query.get(id)
+    if log:
+        return jsonify(log.to_dict())
+    return jsonify({'message': 'Log not found'}), 404
