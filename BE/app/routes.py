@@ -1053,3 +1053,22 @@ def get_log_by_id(id):
     if log:
         return jsonify(log.to_dict())
     return jsonify({'message': 'Log not found'}), 404
+
+# Endpoint untuk membuat data baru
+@quiz_bp.route('/log_session', methods=['POST'])
+def create_log():
+    data = request.json
+    jumlah = data.get('jumlah')
+    produk = data.get('produk')
+    sumber = data.get('sumber')
+    sumber_link = data.get('sumber_link')
+
+    new_log = LogSession(
+        jumlah=jumlah,
+        produk=produk,
+        sumber=sumber,
+        sumber_link=sumber_link
+    )
+    db.session.add(new_log)
+    db.session.commit()
+    return jsonify({'message': 'Log created successfully', 'log': new_log.to_dict()}), 201
