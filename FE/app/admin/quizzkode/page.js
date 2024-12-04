@@ -269,6 +269,14 @@ function QuizKodeCRUD() {
             </li>
             <li>
               <a
+                href="/admin/logsession"
+                className="block px-4 py-2 rounded hover:bg-gray-700"
+              >
+                Log Session
+              </a>
+            </li>
+            <li>
+              <a
                 href="#"
                 onClick={() => setIsMenuOpen(false)}
                 className="block px-4 py-2 rounded hover:bg-gray-700"
