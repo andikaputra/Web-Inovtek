@@ -1,5 +1,5 @@
 from flask import Blueprint, request,send_from_directory, abort,send_file, jsonify, current_app
-from .models import db, SoalJenis, Waktu, QuizKode, Soal, SoalJawaban, Peserta, PesertaNilai, PesertaJawaban, Users, SesiMainVR, SesiMainAR
+from .models import db, SoalJenis, Waktu, QuizKode, Soal, SoalJawaban, Peserta, PesertaNilai, PesertaJawaban, Users, SesiMainVR, SesiMainAR,LogSession
 from flask_cors import CORS
 from sqlalchemy.exc import IntegrityError  # Import IntegrityError
 from sqlalchemy.orm import joinedload
@@ -1039,3 +1039,9 @@ def delete_sesi_ar(id):
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+# ==============================================LOG SESSION================================================
+# Endpoint untuk mengambil semua data
+@quiz_bp.route('/log_session', methods=['GET'])
+def get_all_logs():
+    logs = LogSession.query.all()
+    return jsonify([log.to_dict() for log in logs])
