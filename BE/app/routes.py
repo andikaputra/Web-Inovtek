@@ -1044,7 +1044,7 @@ def delete_sesi_ar(id):
 @quiz_bp.route('/log_session', methods=['GET'])
 def get_all_logs():
     logs = LogSession.query.all()
-    return jsonify([log.to_dict() for log in logs])    return jsonify([log.to_dict() for log in logs])
+    return jsonify([log.to_dict() for log in logs])
 
 # Endpoint untuk mengambil data berdasarkan ID
 @quiz_bp.route('/log_session/<int:id>', methods=['GET'])
@@ -1088,3 +1088,14 @@ def update_log(id):
 
     db.session.commit()
     return jsonify({'message': 'Log updated successfully', 'log': log.to_dict()})
+
+# Endpoint untuk menghapus data berdasarkan ID
+@quiz_bp.route('/log_session/<int:id>', methods=['DELETE'])
+def delete_log(id):
+    log = LogSession.query.get(id)
+    if not log:
+        return jsonify({'message': 'Log not found'}), 404
+
+    db.session.delete(log)
+    db.session.commit()
+    return jsonify({'message': 'Log deleted successfully'})
