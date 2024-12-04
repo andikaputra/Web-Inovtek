@@ -1039,6 +1039,48 @@ def delete_sesi_ar(id):
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+# Endpoint untuk mengimpor data dari Excel
+@quiz_bp.route('/import_sesi_main_ar', methods=['POST'])
+def import_sesi_main_ar():
+    if 'file' not in request.files:
+        return jsonify({'message': 'No file part'}), 400
+
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'message': 'No selected file'}), 400
+
+    try:
+        workbook = openpyxl.load_workbook(file)
+        sheet = workbook.active
+
+        imported_data = []
+        for row in sheet.iter_rows(min_row=2, values_only=True):  # Mulai dari baris kedua (header dilewati)
+            no_sesi, nama, kota, lokasi, waktu_mulai, waktu_selesai = row
+
+            # Konversi waktu mulai dan waktu selesai ke format datetime
+            waktu_mulai_dt = datetime.strptime(waktu_mulai, '%Y-%m-%d %H:%M:%S') if waktu_mulai else None
+            waktu_selesai_dt = datetime.strptime(waktu_selesai, '%Y-%m-%d %H:%M:%S') if waktu_selesai else None
+
+            # Buat objek SesiMainAR
+            sesi = SesiMainAR(
+                no_sesi=no_sesi,
+                nama=nama,
+                kota=kota,
+                lokasi=lokasi,
+                waktu_mulai=waktu_mulai_dt,
+                waktu_selesai=waktu_selesai_dt
+            )
+            db.session.add(sesi)
+            imported_data.append(sesi.to_dict())
+
+        db.session.commit()
+        return jsonify({'message': 'Data imported successfully', 'data': imported_data}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': 'Error importing data', 'error': str(e)}), 500
+
+
 # ==============================================LOG SESSION================================================
 # Endpoint untuk mengambil semua data
 @quiz_bp.route('/log_session', methods=['GET'])
