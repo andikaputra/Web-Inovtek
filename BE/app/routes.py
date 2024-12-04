@@ -1072,3 +1072,19 @@ def create_log():
     db.session.add(new_log)
     db.session.commit()
     return jsonify({'message': 'Log created successfully', 'log': new_log.to_dict()}), 201
+
+# Endpoint untuk mengupdate data berdasarkan ID
+@quiz_bp.route('/log_session/<int:id>', methods=['PUT'])
+def update_log(id):
+    log = LogSession.query.get(id)
+    if not log:
+        return jsonify({'message': 'Log not found'}), 404
+
+    data = request.json
+    log.jumlah = data.get('jumlah', log.jumlah)
+    log.produk = data.get('produk', log.produk)
+    log.sumber = data.get('sumber', log.sumber)
+    log.sumber_link = data.get('sumber_link', log.sumber_link)
+
+    db.session.commit()
+    return jsonify({'message': 'Log updated successfully', 'log': log.to_dict()})
