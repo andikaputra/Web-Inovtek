@@ -1210,3 +1210,18 @@ def get_all_logsessionkota():
 def get_logsessionkota_by_id(id):
     entry = LogSessionKota.query.get_or_404(id)
     return jsonify(entry.to_dict())
+
+# Update - Perbarui Data Berdasarkan ID
+@quiz_bp.route('/logsessionkota/<int:id>', methods=['PUT'])
+def update_logsessionkota(id):
+    data = request.json
+    entry = LogSessionKota.query.get_or_404(id)
+    
+    entry.jumlah = data.get('jumlah', entry.jumlah)
+    entry.produk = data.get('produk', entry.produk)
+    entry.kota = data.get('kota', entry.kota)
+    entry.sumber = data.get('sumber', entry.sumber)
+    entry.sumber_link = data.get('sumber_link', entry.sumber_link)
+    
+    db.session.commit()
+    return jsonify(entry.to_dict())
