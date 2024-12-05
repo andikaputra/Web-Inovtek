@@ -1225,3 +1225,11 @@ def update_logsessionkota(id):
     
     db.session.commit()
     return jsonify(entry.to_dict())
+
+# Delete - Hapus Data Berdasarkan ID
+@quiz_bp.route('/logsessionkota/<int:id>', methods=['DELETE'])
+def delete_logsessionkota(id):
+    entry = LogSessionKota.query.get_or_404(id)
+    db.session.delete(entry)
+    db.session.commit()
+    return jsonify({"message": f"Entry with id {id} has been deleted."})
