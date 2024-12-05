@@ -155,3 +155,21 @@ class LogSession(db.Model):
             'sumber': self.sumber,
             'sumber_link': self.sumber_link
         }
+
+class LogSessionKota(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    jumlah = db.Column(db.Integer, nullable=False)
+    produk = db.Column(db.String(255), nullable=False)
+    kota = db.Column(db.String(255), nullable=False)
+    sumber = db.Column(db.String(255), nullable=True)
+    sumber_link = db.Column(db.String(255), nullable=True)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'jumlah': self.jumlah,
+            'produk': self.produk,
+            'kota': self.kota,
+            'sumber': self.sumber,
+            'sumber_link': self.sumber_link
+        }
