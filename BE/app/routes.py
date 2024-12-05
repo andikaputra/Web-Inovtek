@@ -1,5 +1,5 @@
 from flask import Blueprint, request,send_from_directory, abort,send_file, jsonify, current_app
-from .models import db, SoalJenis, Waktu, QuizKode, Soal, SoalJawaban, Peserta, PesertaNilai, PesertaJawaban, Users, SesiMainVR, SesiMainAR,LogSession
+from .models import db, SoalJenis, Waktu, QuizKode, Soal, SoalJawaban, Peserta, PesertaNilai, PesertaJawaban, Users, SesiMainVR, SesiMainAR,LogSession,LogSessionKota
 from flask_cors import CORS
 from sqlalchemy.exc import IntegrityError  # Import IntegrityError
 from sqlalchemy.orm import joinedload
@@ -1182,3 +1182,19 @@ def delete_log(id):
     db.session.delete(log)
     db.session.commit()
     return jsonify({'message': 'Log deleted successfully'})
+
+# ============================LOG SESSION KOTA===============================================
+# Create - Tambah Data
+@quiz_bp.route('/logsessionkota', methods=['POST'])
+def create_logsessionkota():
+    data = request.json
+    new_entry = LogSessionKota(
+        jumlah=data['jumlah'],
+        produk=data['produk'],
+        kota=data['kota'],
+        sumber=data.get('sumber'),
+        sumber_link=data.get('sumber_link')
+    )
+    db.session.add(new_entry)
+    db.session.commit()
+    return jsonify(new_entry.to_dict()), 201
