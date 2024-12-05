@@ -1204,3 +1204,9 @@ def create_logsessionkota():
 def get_all_logsessionkota():
     all_entries = LogSessionKota.query.all()
     return jsonify([entry.to_dict() for entry in all_entries])
+
+# Read - Ambil Data Berdasarkan ID
+@quiz_bp.route('/logsessionkota/<int:id>', methods=['GET'])
+def get_logsessionkota_by_id(id):
+    entry = LogSessionKota.query.get_or_404(id)
+    return jsonify(entry.to_dict())
