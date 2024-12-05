@@ -21,7 +21,8 @@ function Quiz() {
   const [isLoading, setIsLoading] = useState(true);
   const [countdown, setCountdown] = useState(0);
   const apiUrl = process.env.apiUrl;
-  const [startTime, setStartTime] = useState(null); // Waktu mulai soal
+  const [startTime, setStartTime] = useState(null);
+  const [disableJawaban, setDisableJawaban] = useState(false); // Waktu mulai soal
 
   const fetchSoal = async (link) => {
     setIsLoading(true);
@@ -130,7 +131,8 @@ function Quiz() {
   };
 
   const submitAnswers = async () => {
-
+    setIsLoading(true);
+    setDisableJawaban(true);
     const endTime = new Date();
     const waktuJawab = countdown; // Waktu jawab dalam detik
 
@@ -173,11 +175,14 @@ function Quiz() {
 
             if (isCorrect) {
                 soalBenar();
+                setIsLoading(false);
             } else {
                 soalSalah();
+                setIsLoading(false);
             }
         }
     } catch (error) {
+        setIsLoading(false);
         console.log("Error submitting answers:", error);
         alert("Terjadi kesalahan saat mengirim jawaban");
     }
@@ -267,6 +272,7 @@ function Quiz() {
           <button
             onClick={submitAnswers}
             className="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg mt-4"
+            disabled={disableJawaban}
           >
             Kirim Jawaban
           </button>
