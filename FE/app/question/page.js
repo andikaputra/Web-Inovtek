@@ -54,7 +54,9 @@ function QuizQuestion() {
 
 
   const mulaiUjian = async () => {
-    window.location.href = "/quizzscreen";
+    if (typeof window !== "undefined") {
+      window.location.href = "/quizzscreen";
+    } 
   };
 
 

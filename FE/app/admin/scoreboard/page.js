@@ -21,11 +21,15 @@ function Scoreboard() {
   const apiUrl = process.env.apiUrl;
 
   const mulaiNext = async () => {
-    window.location.href = "/admin/question";
+    if (typeof window !== "undefined") {
+      window.location.href = "/admin/question";
+    } 
   };
 
   const mulaiEnd = async () => {
-    window.location.href = "/admin/winner";
+    if (typeof window !== "undefined") {
+      window.location.href = "/admin/winner";
+    } 
   };
 
   // useEffect(() => {

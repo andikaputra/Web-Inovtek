@@ -8,11 +8,19 @@ const KahootKodeScreen = () => {
   const [kode, setKode] = useState("");
   const [quizKodes, setQuizKodes] = useState([]);
   const [swalProps, setSwalProps] = useState({});
+  const [isClient, setIsClient] = useState(false);
 
 
   const masukRoom = async () => {
-    window.location.href = "/userscreen";
+    if (typeof window !== "undefined") {
+      window.location.href = "/userscreen";
+    } 
   };
+
+    // Pastikan kode hanya dijalankan di client-side
+  useEffect(() => {
+    setIsClient(true); // Menandakan bahwa komponen ini sudah di-mount di client
+  }, []);
 
   const apiUrl = process.env.apiUrl; // Pastikan environment variabel ini sudah diset
 
@@ -35,6 +43,11 @@ const KahootKodeScreen = () => {
       });
     }
   };
+
+  // Jangan render jika sedang di server-side
+  if (!isClient) {
+    return null; // Render kosong saat SSR
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-purple-800 text-white">

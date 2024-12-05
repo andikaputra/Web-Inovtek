@@ -117,8 +117,10 @@ function Quiz() {
         next_page:"quizdisplay",
         start_ujian:false
       }, { merge: true });
-      
-       window.location.href = "/admin/quizzdisplay";
+        
+      if (typeof window !== "undefined") {
+        window.location.href = "/admin/quizzdisplay";
+      } 
       setTampilJawaban(true); // Set tampilJawaban ke true saat waktu habis
       console.log(`Document with ID ${docId} has been created/updated.`); 
     } catch (error) {

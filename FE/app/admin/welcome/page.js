@@ -6,7 +6,7 @@ function WelcomePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(true); // State to toggle menu
 
   useEffect(() => {
-    if(sessionStorage.getItem("islogin") != "true"){
+    if(typeof window !== "undefined" && sessionStorage.getItem("islogin") != "true"){
       window.location.href = "/admin/login";
     } 
   }, []);

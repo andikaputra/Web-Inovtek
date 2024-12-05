@@ -37,11 +37,13 @@ function QuizQuestion() {
   };
 
   const mulaiUjian = () => {
-    window.location.href = "/admin/quizz";
+    if (typeof window !== "undefined") {
+      window.location.href = "/admin/quizz";
+    } 
   };
 
   useEffect(() => { 
-    if(sessionStorage.getItem("islogin") != "true"){
+    if(typeof window !== "undefined" && sessionStorage.getItem("islogin") != "true"){
       window.location.href = "/admin/login";
     }
     // Ambil `kode` dari localStorage

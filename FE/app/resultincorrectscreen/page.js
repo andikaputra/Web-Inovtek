@@ -23,7 +23,9 @@ function QuizIncorrect() {
   const apiUrl = process.env.apiUrl;
 
   const nextPage = async () => {
-    window.location.href = "/scoreboard";
+    if (typeof window !== "undefined") {
+      window.location.href = "/scoreboard";
+    } 
   };
  
   const fetchNilai = async () => {

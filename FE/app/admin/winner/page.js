@@ -24,7 +24,9 @@ function Scoreboard() {
   };
 
   const handleBack = () => {
-    window.location.href = "/admin/quizzkode";
+    if (typeof window !== "undefined") {
+      window.location.href = "/admin/quizzkode";
+    } 
   };
 
   useEffect(() => {

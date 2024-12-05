@@ -22,11 +22,15 @@ function Scoreboard() {
   const apiUrl = process.env.apiUrl;
   
   const mulaiNext = async () => {
-    window.location.href = "/question";
+    if (typeof window !== "undefined") {
+      window.location.href = "/question";
+    } 
   };
 
   const mulaiEnd = async () => {
-    window.location.href = "/ranking";
+    if (typeof window !== "undefined") {
+      window.location.href = "/ranking";
+    } 
   };
  
   // Fungsi untuk mengambil skor berdasarkan `id_quiz_code`

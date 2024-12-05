@@ -217,7 +217,7 @@ function QuizAdmin() {
 
     // Fetch data dari API
   useEffect(() => {
-    if(sessionStorage.getItem("islogin") != "true"){
+    if(typeof window !== "undefined" && sessionStorage.getItem("islogin") != "true"){
       window.location.href = "/admin/login";
     }
     const queryParams = new URLSearchParams(window.location.search);
@@ -298,7 +298,9 @@ function QuizAdmin() {
   };
 
   const handleBack = () =>{
-    window.location.href = "/admin/quizzkode";
+    if (typeof window !== "undefined") {
+      window.location.href = "/admin/quizzkode";
+    } 
   }
 
   return (

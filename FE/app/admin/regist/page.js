@@ -19,7 +19,9 @@ function Register() {
       setMessage(response.data.message);
       setUsername('');
       setPassword('');
-      window.location.href = "/admin/login";
+      if (typeof window !== "undefined") {
+        window.location.href = "/admin/login";
+      } 
     } catch (error) {
       if (error.response?.status === 409) {
         setMessage("Username already exists");

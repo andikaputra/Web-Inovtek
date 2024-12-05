@@ -24,7 +24,9 @@ const WaitingRoom = () => {
   const [text, setText] = useState(baseUrl); 
 
   const mulaiUjian = async () => {
-    window.location.href = "/admin/question";
+    if (typeof window !== "undefined") {
+      window.location.href = "/admin/question";
+    } 
   };
 
   const apiUrl = process.env.apiUrl; // Pastikan environment variabel ini sudah diset

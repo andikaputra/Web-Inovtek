@@ -22,6 +22,7 @@ function QuizKodeCRUD() {
   const [quizKodes, setQuizKodes] = useState([]);
   const [editingId, setEditingId] = useState(null); // Untuk ID yang sedang diedit
   const [swalProps, setSwalProps] = useState({});
+  const [isClient, setIsClient] = useState(false);
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -177,9 +178,10 @@ function QuizKodeCRUD() {
 
 
   useEffect(() => {
-    if(sessionStorage.getItem("islogin") != "true"){
+    setIsClient(true);
+    if (typeof window !== "undefined" && sessionStorage.getItem("islogin") !== "true") {
       window.location.href = "/admin/login";
-    }
+    } 
     fetchQuizKodes();
   }, []);
 
@@ -227,13 +229,19 @@ function QuizKodeCRUD() {
       console.log("Document ID:", docId);
       localStorage.setItem("id_game", docId);
       localStorage.setItem("kode_game", kode);
-      window.location.href = "/admin/waitingroom";
+      if (typeof window !== "undefined") {
+        window.location.href = "/admin/waitingroom";
+      } 
       // Kamu bisa menggunakan docId ini sesuai kebutuhan
       // Misalnya, simpan ke dalam state atau kirim ke fungsi lain
     } catch (error) {
       console.log("Error adding document:", error);
     }
   };
+
+  if (!isClient) {
+    return null; // Jangan render apa pun selama SSR
+  }
 
   return (
      <div className="min-h-screen flex">

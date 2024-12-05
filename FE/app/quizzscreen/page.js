@@ -87,11 +87,15 @@ function Quiz() {
   }, [countdown]);
 
   const soalBenar = () => {
-    window.location.href = "/resultcorrectscreen";
+    if (typeof window !== "undefined") {
+      window.location.href = "/resultcorrectscreen";
+    } 
   };
 
   const soalSalah = () => {
-    window.location.href = "/resultincorrectscreen";
+    if (typeof window !== "undefined") {
+      window.location.href = "/resultincorrectscreen";
+    } 
   };
 
   // Fungsi untuk memilih atau membatalkan pilihan jawaban

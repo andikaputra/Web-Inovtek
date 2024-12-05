@@ -18,9 +18,13 @@ import SweetAlert2 from 'react-sweetalert2';
 const KahootLogin = () => {
   const [kode, setKode] = useState("");
   const [swalProps, setSwalProps] = useState({});
+  const [isClient, setIsClient] = useState(false);
 
    const mulaiUjian = async () => {
-    window.location.href = "/waitingscreen";
+    setIsClient(true);
+    if (typeof window !== "undefined") {
+      window.location.href = "/waitingscreen";
+    } 
   };
 
 
@@ -69,6 +73,10 @@ const KahootLogin = () => {
     } catch (error) {
       console.log("Error adding document:", error);
     }
+  }
+
+  if (!isClient) {
+    return null; // Jangan render apa pun selama SSR
   }
 
   return (

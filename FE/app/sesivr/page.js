@@ -287,6 +287,7 @@ function SesiCRUD() {
                     }}
                   >
                     <option value="">Pilih Kota</option>
+                    <option value="Aceh">Aceh</option>
                     <option value="Ambon">Ambon</option>
                     <option value="Cilacap">Cilacap</option>
                     <option value="Jembrana">Jembrana</option>

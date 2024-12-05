@@ -76,7 +76,9 @@ function QuizDisplay() {
   }, []);
 
   const scoreboardPage = () => {
-    window.location.href = "/admin/scoreboard";
+    if (typeof window !== "undefined") {
+      window.location.href = "/admin/scoreboard";
+    } 
   };
 
   // Create new item

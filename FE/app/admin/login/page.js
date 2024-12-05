@@ -21,7 +21,9 @@ function Login() {
         setMessage(response.data.message);
         console.log("Login successful");
         sessionStorage.setItem("islogin", "true");
-        window.location.href = "/admin/quizzkode";
+        if (typeof window !== "undefined") {
+          window.location.href = "/admin/quizzkode";
+        } 
         // Lakukan sesuatu setelah login berhasil (redirect, simpan token, dll)
       }
     } catch (error) {
