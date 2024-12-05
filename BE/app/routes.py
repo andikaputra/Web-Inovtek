@@ -1198,3 +1198,9 @@ def create_logsessionkota():
     db.session.add(new_entry)
     db.session.commit()
     return jsonify(new_entry.to_dict()), 201
+
+# Read - Ambil Semua Data
+@quiz_bp.route('/logsessionkota', methods=['GET'])
+def get_all_logsessionkota():
+    all_entries = LogSessionKota.query.all()
+    return jsonify([entry.to_dict() for entry in all_entries])
