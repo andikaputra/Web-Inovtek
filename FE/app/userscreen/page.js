@@ -20,12 +20,15 @@ const KahootLogin = () => {
   const [swalProps, setSwalProps] = useState({});
   const [isClient, setIsClient] = useState(false);
 
-   const mulaiUjian = async () => {
-    setIsClient(true);
+   const mulaiUjian = async () => { 
     if (typeof window !== "undefined") {
       window.location.href = "/waitingscreen";
     } 
   };
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
 
   const apiUrl = process.env.apiUrl; // Pastikan environment variabel ini sudah diset
