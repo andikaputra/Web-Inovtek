@@ -871,13 +871,16 @@ def get_participant_ranking(id_quiz_kode, id_peserta):
     if not peserta_nilai:
         return jsonify({'error': 'Peserta tidak ditemukan'}), 404
 
+    # Struktur respons dengan rank, kode_unik, nilai, dan waktu
     response = {
         "rank": peserta_nilai.rank,
-        "name": peserta_nilai.kode_unik,  # Ganti 'name' menjadi 'kode_unik' sebagai nama peserta
-        "points": peserta_nilai.nilai
+        "kode_unik": peserta_nilai.kode_unik,  # Nama peserta
+        "points": peserta_nilai.nilai,
+        "created_at": peserta_nilai.created_at.strftime('%Y-%m-%d %H:%M:%S')  # Format waktu
     }
 
     return jsonify(response), 200
+
 
 @quiz_bp.route('/top_winners/<int:id_quiz_kode>', methods=['GET'])
 def get_top_winners(id_quiz_kode):
@@ -885,7 +888,7 @@ def get_top_winners(id_quiz_kode):
     top_scores = (db.session.query(Peserta.kode_unik.label("name"), PesertaNilai.nilai.label("score"))
                   .join(PesertaNilai, Peserta.id == PesertaNilai.id_peserta)
                   .filter(PesertaNilai.id_quiz_kode == id_quiz_kode, Peserta.deleted_at.is_(None), PesertaNilai.deleted_at.is_(None))
-                  .order_by(PesertaNilai.nilai.desc())
+                  .order_by(PesertaNilai.nilai.desc(), PesertaNilai.created_at.asc())
                   .limit(3)
                   .all())
 
