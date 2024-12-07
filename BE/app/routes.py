@@ -824,32 +824,48 @@ def get_top_scores(id_quiz_code):
 
     return jsonify(top_scores_data), 200
 
+from sqlalchemy import func
+
 @quiz_bp.route('/ranking/<int:id_quiz_kode>/<int:id_peserta>', methods=['GET'])
 def get_participant_ranking(id_quiz_kode, id_peserta):
-   # Buat subquery untuk menghitung peringkat berdasarkan nilai tertinggi
+    # Buat subquery untuk menghitung peringkat berdasarkan nilai dan waktu tercepat
     subquery = (
         db.session.query(
             PesertaNilai.id_peserta,
             PesertaNilai.nilai,
-            func.rank().over(order_by=PesertaNilai.nilai.desc()).label("rank")
+            PesertaNilai.created_at,
+            func.rank()
+            .over(
+                order_by=[
+                    PesertaNilai.nilai.desc(),       # Prioritaskan nilai tertinggi
+                    PesertaNilai.created_at.asc()   # Jika nilai sama, pilih waktu tercepat
+                ]
+            ).label("rank")
         )
-        .join(Peserta, Peserta.id == PesertaNilai.id_peserta)  # Join dengan Peserta
+        .join(Peserta, Peserta.id == PesertaNilai.id_peserta)  # Join dengan tabel Peserta
         .filter(
             PesertaNilai.id_quiz_kode == id_quiz_kode,
-            PesertaNilai.deleted_at.is_(None),
-            Peserta.deleted_at.is_(None)  # Filter Peserta yang belum dihapus
+            PesertaNilai.deleted_at.is_(None),  # Pastikan nilai belum dihapus
+            Peserta.deleted_at.is_(None)       # Pastikan peserta belum dihapus
         )
         .subquery()
     )
 
     # Gabungkan subquery dengan tabel Peserta untuk mendapatkan kode_unik peserta
-    peserta_nilai = (db.session.query(Peserta.kode_unik, subquery.c.nilai, subquery.c.rank)
-                     .join(Peserta, Peserta.id == subquery.c.id_peserta)
-                     .filter(
-                            Peserta.deleted_at.is_(None),  # Pastikan Peserta belum dihapus
-                            subquery.c.id_peserta == id_peserta
-                        )
-                     .first())
+    peserta_nilai = (
+        db.session.query(
+            Peserta.kode_unik,
+            subquery.c.nilai,
+            subquery.c.rank,
+            subquery.c.created_at  # Ambil waktu untuk validasi
+        )
+        .join(Peserta, Peserta.id == subquery.c.id_peserta)
+        .filter(
+            Peserta.deleted_at.is_(None),       # Pastikan Peserta belum dihapus
+            subquery.c.id_peserta == id_peserta  # Cari peserta berdasarkan ID
+        )
+        .first()
+    )
 
     # Jika peserta tidak ditemukan, kembalikan error
     if not peserta_nilai:
