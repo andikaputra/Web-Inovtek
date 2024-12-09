@@ -48,11 +48,11 @@ function SesiCRUD() {
     setSearchTerm(term);
     const filtered = sesiList.filter(
       (sesi) =>
-        sesi.no_sesi.toLowerCase().includes(term) ||
-        sesi.nama.toLowerCase().includes(term) ||
-        sesi.skenario.toLowerCase().includes(term) ||
-        sesi.kota.toLowerCase().includes(term) ||
-        sesi.lokasi.toLowerCase().includes(term)
+        sesi.no_sesi?.toLowerCase().includes(term) ||
+        sesi.nama?.toLowerCase().includes(term) ||
+        sesi.skenario?.toLowerCase().includes(term) ||
+        sesi.kota?.toLowerCase().includes(term) ||
+        sesi.lokasi?.toLowerCase().includes(term)
     );
     setFilteredSesiList(filtered);
     setCurrentPage(1); // Reset to first page after filtering
